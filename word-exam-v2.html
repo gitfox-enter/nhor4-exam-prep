@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>单词考试 · 匹配模式（真实数据版）</title>
+    <script src="data/words.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #1b3b4f 0%, #2a5f7a 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 8px;
+        }
+        .game-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(4px);
+            padding: 1rem 0.8rem;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            color: #e9f2f7;
+            text-shadow: 0 2px 6px #0a1e2b;
+            letter-spacing: 1px;
+            padding: 0 0.2rem 0.6rem 0.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+        h1 small {
+            font-size: 0.85rem;
+            font-weight: 300;
+            opacity: 0.8;
+            background: #1f4a5e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 60px;
+            border: 1px solid #8fc3d9;
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .intro-text {
+            color: #bfdef0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .intro-text strong { color: #fcdb7a; }
+        
+        .btn {
+            background: #fad974;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+            transition: 0.06s linear;
+            cursor: pointer;
+            border: 1px solid #ffe399;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #b3952b; }
+        
+        /* 单元选择 */
+        .level-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .level-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #bfdef0;
+            cursor: pointer;
+            transition: 0.15s;
+            backdrop-filter: blur(2px);
+        }
+        .level-btn:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .level-btn.active {
+            background: #fad974;
+            border-color: #ffe399;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+        }
+        
+        /* 考试界面 */
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .timer {
+            color: #fcdb7a;
+            font-size: 1rem;
+            font-weight: 600;
+            background: rgba(0,0,0,0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 60px;
+        }
+        .score-info {
+            color: #bfdef0;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            height: 6px;
+            margin: 0.8rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #fad974;
+            height: 6px;
+            border-radius: 30px;
+            transition: width 0.25s ease;
+        }
+        
+        /* 匹配游戏区 */
+        .game-board {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 1rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .word-column, .def-column {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .col-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #bfdef0;
+            font-weight: 400;
+            padding-left: 6px;
+            margin-bottom: 2px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+            padding: 8px 10px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s ease;
+            cursor: pointer;
+            user-select: none;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            line-height: 1.3;
+            min-height: 44px;
+        }
+        .word-card {
+            background: #264e63;
+            border-color: #578aa3;
+        }
+        .def-card {
+            background: #1d4d4b;
+            border-color: #479f9b;
+        }
+        .card.selected {
+            border: 3px solid #f7d44a;
+            background: #3b6c7c;
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(247,212,74,0.4);
+        }
+        .card.matched {
+            opacity: 0.35;
+            pointer-events: none;
+            border-color: rgba(255,255,255,0.1);
+        }
+        .card.wrong {
+            animation: shake 0.3s;
+            border-color: #ef5350;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 结果界面 */
+        .result-area { text-align: center; }
+        .score-display { font-size: 3rem; font-weight: 600; color: #fcdb7a; margin: 0.5rem 0; }
+        .score-label { color: #bfdef0; font-size: 1rem; margin-bottom: 1rem; }
+        .review-list {
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .review-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #d4eaf5;
+            line-height: 1.5;
+        }
+        .review-item .status { font-weight: 600; display: inline-block; margin-right: 6px; }
+        .review-item.correct .status { color: #a5d6a7; }
+        .review-item.wrong .status { color: #ef9a9a; }
+        .review-item .answer { color: #fcdb7a; font-weight: 500; }
+        
+        @media (max-width: 480px) {
+            .game-container { padding: 0.8rem 0.6rem; border-radius: 28px; }
+            h1 { font-size: 1.1rem; }
+            .card { font-size: 0.8rem; padding: 6px 8px; }
+            .game-board { gap: 0.4rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>📝 单词考试 <small>真实数据版 · 匹配模式</small></h1>
+
+    <!-- 开始界面 -->
+    <div class="screen active" id="screen-start">
+        <div class="intro-text">
+            <p><strong>考试规则</strong></p>
+            <p>• 选择单元，开始单词匹配考试</p>
+            <p>• 共 <strong>10</strong> 题，每题 <strong>1</strong> 分，共 <strong>10</strong> 分</p>
+            <p>• 点击左侧单词，再点击右侧释义，完成匹配</p>
+            <p>• 匹配错误会扣分，匹配正确得分</p>
+            <p>• 限时 <strong>5</strong> 分钟</p>
+        </div>
+        
+        <div class="level-grid" id="level-grid">
+            <div class="level-btn" data-unit="U1">Unit 1 (70词)</div>
+            <div class="level-btn" data-unit="U3">Unit 3 (56词)</div>
+            <div class="level-btn" data-unit="U4">Unit 4 (68词)</div>
+            <div class="level-btn" data-unit="U6">Unit 6 (72词)</div>
+        </div>
+        
+        <button class="btn" id="btn-start" disabled>开始考试</button>
+    </div>
+
+    <!-- 考试界面 -->
+    <div class="screen" id="screen-exam">
+        <div class="exam-header">
+            <div class="score-info">得分: <strong id="score">0</strong> / 10</div>
+            <div class="timer" id="timer">05:00</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        
+        <div class="game-board">
+            <div class="word-column">
+                <div class="col-header">🇬🇧 单词</div>
+                <div id="word-cards"></div>
+            </div>
+            <div class="def-column">
+                <div class="col-header">🇨🇳 释义</div>
+                <div id="def-cards"></div>
+            </div>
+        </div>
+        
+        <div class="nav-bar">
+            <button class="btn" id="btn-finish">提前交卷</button>
+        </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div class="screen" id="screen-result">
+        <div class="result-area">
+            <div class="score-label">你的得分</div>
+            <div class="score-display" id="final-score">0</div>
+            <div class="score-label" id="score-comment"></div>
+            <div class="review-list" id="review-list"></div>
+            <button class="btn" id="btn-restart">🔄 再来一次</button>
+            <button class="btn" id="btn-back-home" style="margin-left: 8px;">返回首页</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    let state = {
+        score: 0,
+        matched: 0,
+        selected: null,
+        startTime: null,
+        timerInterval: null,
+        timeLeft: 300,
+        answers: [],
+        currentUnit: null,
+        examWords: []
+    };
+
+    const $ = id => document.getElementById(id);
+    const screenStart = $('screen-start');
+    const screenExam = $('screen-exam');
+    const screenResult = $('screen-result');
+    const levelGrid = $('level-grid');
+    const btnStart = $('btn-start');
+    const btnFinish = $('btn-finish');
+    const btnRestart = $('btn-restart');
+    const btnBackHome = $('btn-back-home');
+    const timerEl = $('timer');
+    const scoreEl = $('score');
+    const progressFill = $('progress-fill');
+    const wordCards = $('word-cards');
+    const defCards = $('def-cards');
+    const finalScore = $('final-score');
+    const scoreComment = $('score-comment');
+    const reviewList = $('review-list');
+
+    // 单元选择
+    levelGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('level-btn')) {
+            levelGrid.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            state.currentUnit = e.target.dataset.unit;
+            btnStart.disabled = false;
+        }
+    });
+
+    // 开始考试
+    btnStart.addEventListener('click', () => {
+        if (!state.currentUnit) return;
+        
+        // 检查数据是否加载
+        if (typeof WORDS_DATA === 'undefined') {
+            alert('数据未加载！请确保 data/words.js 文件存在。');
+            return;
+        }
+        
+        if (!WORDS_DATA[state.currentUnit]) {
+            alert(`单元 ${state.currentUnit} 的数据未找到！`);
+            return;
+        }
+        
+        // 随机选择10个单词
+        const allWords = WORDS_DATA[state.currentUnit];
+        state.examWords = shuffleArray([...allWords]).slice(0, 10);
+        
+        screenStart.classList.remove('active');
+        screenExam.classList.add('active');
+        state.startTime = Date.now();
+        state.timeLeft = 300;
+        startTimer();
+        renderCards();
+    });
+
+    // 渲染卡片
+    function renderCards() {
+        const shuffledWords = shuffleArray([...state.examWords]);
+        const shuffledDefs = shuffleArray([...state.examWords]);
+        
+        wordCards.innerHTML = '';
+        defCards.innerHTML = '';
+        
+        shuffledWords.forEach((word, idx) => {
+            const div = document.createElement('div');
+            div.className = 'card word-card';
+            div.textContent = `${word.english} (${word.pos})`;
+            div.dataset.english = word.english;
+            div.addEventListener('click', () => selectCard(div, 'word'));
+            wordCards.appendChild(div);
+        });
+        
+        shuffledDefs.forEach((word, idx) => {
+            const div = document.createElement('div');
+            div.className = 'card def-card';
+            div.textContent = word.chinese;
+            div.dataset.english = word.english;
+            div.addEventListener('click', () => selectCard(div, 'def'));
+            defCards.appendChild(div);
+        });
+    }
+
+    // 选择卡片
+    function selectCard(card, type) {
+        if (card.classList.contains('matched')) return;
+        
+        if (!state.selected) {
+            card.classList.add('selected');
+            state.selected = { card, type };
+        } else {
+            const first = state.selected;
+            
+            if (first.type === type) {
+                first.card.classList.remove('selected');
+                card.classList.add('selected');
+                state.selected = { card, type };
+                return;
+            }
+            
+            const english1 = first.card.dataset.english;
+            const english2 = card.dataset.english;
+            
+            if (english1 === english2) {
+                first.card.classList.remove('selected');
+                first.card.classList.add('matched');
+                card.classList.remove('selected');
+                card.classList.add('matched');
+                
+                state.score += 1;
+                state.matched += 1;
+                scoreEl.textContent = state.score;
+                progressFill.style.width = `${(state.matched / state.examWords.length) * 100}%`;
+                
+                state.answers.push({
+                    english: english1,
+                    correct: true
+                });
+                
+                if (state.matched === state.examWords.length) {
+                    finishExam();
+                }
+            } else {
+                first.card.classList.add('wrong');
+                card.classList.add('wrong');
+                
+                state.answers.push({
+                    english: english1,
+                    selected: card.dataset.english,
+                    correct: false
+                });
+                
+                setTimeout(() => {
+                    first.card.classList.remove('selected', 'wrong');
+                    card.classList.remove('selected', 'wrong');
+                }, 300);
+            }
+            
+            state.selected = null;
+        }
+    }
+
+    // 计时器
+    function startTimer() {
+        clearInterval(state.timerInterval);
+        state.timerInterval = setInterval(() => {
+            state.timeLeft--;
+            const mins = Math.floor(state.timeLeft / 60).toString().padStart(2, '0');
+            const secs = (state.timeLeft % 60).toString().padStart(2, '0');
+            timerEl.textContent = `${mins}:${secs}`;
+            
+            if (state.timeLeft <= 0) {
+                finishExam();
+            }
+        }, 1000);
+    }
+
+    // 完成考试
+    function finishExam() {
+        clearInterval(state.timerInterval);
+        screenExam.classList.remove('active');
+        screenResult.classList.add('active');
+        
+        finalScore.textContent = state.score;
+        
+        if (state.score >= 9) {
+            scoreComment.textContent = '🎉 优秀！单词掌握得很好！';
+        } else if (state.score >= 7) {
+            scoreComment.textContent = '👍 良好！继续加油！';
+        } else if (state.score >= 6) {
+            scoreComment.textContent = '📖 及格了，但还需要加强！';
+        } else {
+            scoreComment.textContent = '💪 加油！多复习几遍！';
+        }
+        
+        reviewList.innerHTML = '';
+        state.answers.forEach((ans, idx) => {
+            const div = document.createElement('div');
+            div.className = `review-item ${ans.correct ? 'correct' : 'wrong'}`;
+            div.innerHTML = `
+                <span class="status">${ans.correct ? '✓' : '✗'}</span>
+                <span class="word">${ans.english}</span>
+                ${ans.correct ? '' : `<br><span class="answer">你的匹配：${ans.selected}</span>`}
+            `;
+            reviewList.appendChild(div);
+        });
+    }
+
+    // 提前交卷
+    btnFinish.addEventListener('click', () => {
+        if (confirm('确定要提前交卷吗？')) {
+            finishExam();
+        }
+    });
+
+    // 重新开始
+    btnRestart.addEventListener('click', () => {
+        state = {
+            score: 0,
+            matched: 0,
+            selected: null,
+            startTime: null,
+            timerInterval: null,
+            timeLeft: 300,
+            answers: [],
+            currentUnit: state.currentUnit,
+            examWords: []
+        };
+        scoreEl.textContent = '0';
+        screenResult.classList.remove('active');
+        screenStart.classList.add('active');
+        timerEl.textContent = '05:00';
+    });
+
+    // 返回首页
+    btnBackHome.addEventListener('click', () => {
+        screenResult.classList.remove('active');
+        screenStart.classList.add('active');
+    });
+
+    // 打乱数组
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+})();
+</script>
+</body>
+</html>
