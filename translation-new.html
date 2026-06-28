@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>翻译题 · 统一格式新版</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #1b3b4f 0%, #2a5f7a 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 12px;
+        }
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(4px);
+            padding: 1.2rem 1rem;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            font-weight: 500;
+            color: #e9f2f7;
+            text-shadow: 0 2px 6px #0a1e2b;
+            letter-spacing: 1px;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 small {
+            font-size: 0.85rem;
+            font-weight: 300;
+            opacity: 0.8;
+            background: #1f4a5e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 60px;
+            border: 1px solid #8fc3d9;
+        }
+        
+        .level-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .level-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #bfdef0;
+            cursor: pointer;
+            transition: 0.15s;
+            backdrop-filter: blur(2px);
+        }
+        .level-btn:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .level-btn.active {
+            background: #fad974;
+            border-color: #ffe399;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+        }
+        
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        
+        .intro-text {
+            color: #bfdef0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+        }
+        .intro-text strong {
+            color: #fcdb7a;
+        }
+        
+        .btn {
+            background: #fad974;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+            transition: 0.06s linear;
+            cursor: pointer;
+            border: 1px solid #ffe399;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #b3952b;
+        }
+        
+        /* 卡片样式 - 统一格式 */
+        .card-item {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-item:hover {
+            border-color: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.12);
+        }
+        .card-item.expanded {
+            border-color: #fad974;
+            background: rgba(250,217,116,0.1);
+        }
+        
+        .card-number {
+            color: #fcdb7a;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-english {
+            color: #e9f2f7;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+        .card-english .cn {
+            color: #8fc3d9;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+        
+        .card-chinese {
+            color: #fcdb7a;
+            font-size: 1rem;
+            line-height: 1.7;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            display: none;
+            margin-top: 0.5rem;
+        }
+        .card-chinese.show {
+            display: block;
+        }
+        
+        .card-toggle {
+            color: #bfdef0;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .card-toggle span {
+            color: #fcdb7a;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 480px) {
+            .game-container { padding: 0.8rem 0.6rem; border-radius: 28px; }
+            h1 { font-size: 1.1rem; }
+            .card-english { font-size: 0.85rem; }
+            .card-chinese { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>🌐 翻译题 <small>统一格式 · 新版</small></h1>
+
+    <!-- 单元选择 -->
+    <div class="level-grid" id="level-grid">
+        <div class="level-btn active" data-unit="all">全部</div>
+        <div class="level-btn" data-unit="U1">Unit 1</div>
+        <div class="level-btn" data-unit="U3">Unit 3</div>
+        <div class="level-btn" data-unit="U4">Unit 4</div>
+        <div class="level-btn" data-unit="U6">Unit 6</div>
+    </div>
+
+    <!-- 翻译卡片区 -->
+    <div class="screen active" id="screen-cards">
+        <div class="intro-text">
+            <p><strong>📖 使用说明</strong></p>
+            <p>• 点击卡片查看中文翻译</p>
+            <p>• 所有题目已统一格式：英文原文（括号标注中文）+ 整句中文翻译</p>
+        </div>
+        <div id="cards-container"></div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // 统一格式的翻译数据
+    const TRANSLATIONS = [
+        // Unit 1
+        {
+            unit: 'U1',
+            num: 1,
+            english: 'Urban-rural integration（城乡一体化） is a new stage（新阶段） in China\'s development（发展） toward modernization（现代化） and urbanization（城市化）.',
+            chinese: '城乡一体化是我国现代化和城市化发展的一个新阶段。'
+        },
+        {
+            unit: 'U1',
+            num: 2,
+            english: 'It aims to（旨在） eliminate（消除） the urban-rural dual economic structure（城乡二元经济结构） through integrated planning（统筹规划） for urban and rural development（城乡发展）, and through institutional reform（体制改革） and policy adjustment（政策调整）.',
+            chinese: '其目的是通过对城乡发展进行统筹规划，并通过体制改革和政策调整，破除城乡二元经济结构。'
+        },
+        {
+            unit: 'U1',
+            num: 3,
+            english: 'Only by greatly promoting（大力推进） urban-rural integration can the whole urban and rural economy（整个城乡经济） of our country develop comprehensively（全面地） and sustainably（可持续地）.',
+            chinese: '只有大力推进城乡一体化，我国整个城乡经济才能实现全面、可持续发展。'
+        },
+        
+        // Unit 3 (示例)
+        {
+            unit: 'U3',
+            num: 1,
+            english: 'The makerspace（创客空间） provides a collaborative environment（协作环境） where innovators（创新者） can share ideas（分享想法） and resources（资源）.',
+            chinese: '创客空间提供了一个协作环境，让创新者可以分享想法和资源。'
+        },
+        
+        // Unit 4 (示例)
+        {
+            unit: 'U4',
+            num: 1,
+            english: 'Environmental protection（环境保护） requires the joint efforts（共同努力） of governments（政府）, enterprises（企业）, and individuals（个人）.',
+            chinese: '环境保护需要政府、企业和个人的共同努力。'
+        },
+        
+        // Unit 6 (示例)
+        {
+            unit: 'U6',
+            num: 1,
+            english: 'Technological innovation（技术创新） is the key driver（关键驱动力） of economic growth（经济增长） in the 21st century（21世纪）.',
+            chinese: '技术创新是21世纪经济增长的关键驱动力。'
+        },
+    ];
+
+    const levelGrid = document.getElementById('level-grid');
+    const cardsContainer = document.getElementById('cards-container');
+    let currentUnit = 'all';
+
+    // 单元选择
+    levelGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('level-btn')) {
+            levelGrid.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            currentUnit = e.target.dataset.unit;
+            renderCards();
+        }
+    });
+
+    // 渲染卡片
+    function renderCards() {
+        const filtered = currentUnit === 'all' 
+            ? TRANSLATIONS 
+            : TRANSLATIONS.filter(t => t.unit === currentUnit);
+        
+        cardsContainer.innerHTML = '';
+        filtered.forEach((t, idx) => {
+            const div = document.createElement('div');
+            div.className = 'card-item';
+            div.innerHTML = `
+                <div class="card-number">${t.unit} - 第 ${t.num} 句</div>
+                <div class="card-english">${t.english}</div>
+                <div class="card-chinese">${t.chinese}</div>
+                <div class="card-toggle">点击 <span>查看/隐藏</span> 中文翻译</div>
+            `;
+            
+            div.addEventListener('click', () => {
+                const chinese = div.querySelector('.card-chinese');
+                chinese.classList.toggle('show');
+                div.classList.toggle('expanded');
+            });
+            
+            cardsContainer.appendChild(div);
+        });
+    }
+
+    // 初始渲染
+    renderCards();
+})();
+</script>
+</body>
+</html>
