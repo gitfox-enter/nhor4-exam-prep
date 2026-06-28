@@ -99,101 +99,128 @@
             cursor: pointer;
             transition: all 0.15s ease;
             text-decoration: none;
-            color: white;
+            color: inherit;
         }
         .card:hover {
-            transform: scale(1.02);
-            border-color: #f7d44a;
-            box-shadow: 0 0 0 3px rgba(247,212,74,0.4);
-        }
-        .card:active {
-            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
         .card.primary {
-            background: linear-gradient(135deg, #2a5770, #1f4a5e);
-            border-color: #fcdb7a;
+            background: linear-gradient(135deg, rgba(252, 219, 122, 0.25), rgba(143, 195, 217, 0.15));
+            border: 2px solid rgba(252, 219, 122, 0.4);
         }
-        .card.new {
-            position: relative;
-            overflow: hidden;
+        .card.primary:hover {
+            background: linear-gradient(135deg, rgba(252, 219, 122, 0.35), rgba(143, 195, 217, 0.25));
         }
         .card.new::after {
-            content: 'NEW';
-            position: absolute;
-            top: 8px;
-            right: -20px;
-            background: #ef5350;
-            color: white;
-            padding: 2px 25px;
+            content: "NEW";
+            background: #4caf50;
+            color: #fff;
             font-size: 0.65rem;
-            font-weight: 700;
-            transform: rotate(45deg);
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        .card.disabled {
+            background: rgba(255, 255, 255, 0.05);
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.6;
         }
         .card-info {
             display: flex;
             flex-direction: column;
             gap: 4px;
-            flex: 1;
         }
         .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            color: #e9f2f7;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
         .card-subtitle {
-            font-size: 0.75rem;
+            color: #afcbd9;
+            font-size: 0.8rem;
             font-weight: 300;
-            opacity: 0.7;
         }
         .card-badge {
-            background: rgba(255,255,255,0.15);
-            padding: 5px 12px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #fcdb7a;
+            background: rgba(255, 255, 255, 0.15);
+            color: #bfdef0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.2);
-            white-space: nowrap;
-            margin-left: 12px;
         }
         .divider {
             height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 1.5rem 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #afcbd9;
-            font-size: 0.75rem;
-            opacity: 0.6;
+            background: rgba(255,255,255,0.15);
+            margin: 1.2rem 0;
         }
         .external-link {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px dashed rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 12px 16px;
-            margin-top: 1rem;
-            color: #bfdef0;
-            font-size: 0.85rem;
+            gap: 10px;
+            background: rgba(76, 175, 80, 0.15);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            padding: 12px 18px;
+            border-radius: 24px;
+            color: #81c784;
             text-decoration: none;
-            transition: all 0.15s ease;
+            margin-top: 1.5rem;
+            transition: all 0.2s;
+            font-size: 0.9rem;
         }
         .external-link:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(252,219,122,0.5);
+            background: rgba(76, 175, 80, 0.25);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.75rem;
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+        .placeholder-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            color: #afcbd9;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        .placeholder-box strong {
+            color: #fcdb7a;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .ima-link {
+            display: inline-block;
+            background: rgba(143, 195, 217, 0.2);
+            color: #8fc3d9;
+            padding: 6px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .ima-link:hover {
+            background: rgba(143, 195, 217, 0.3);
+            color: #bfdef0;
         }
         @media (max-width: 480px) {
             .container {
-                padding: 1.2rem 1rem;
+                padding: 1.5rem 1rem;
                 border-radius: 28px;
             }
             .header h1 {
-                font-size: 1.3rem;
+                font-size: 1.4rem;
             }
             .card {
                 padding: 12px 16px;
@@ -329,40 +356,38 @@
 
     <div class="divider"></div>
 
-    <!-- 四、阅读 -->
+    <!-- 四、阅读理解（占位） -->
     <div class="section">
         <div class="section-title">📖 四、阅读理解</div>
         <div class="section-desc">
-            Multiple-choice questions · 阅读理解练习<br>
-            当前使用样例数据（待接入 ima 真实数据）
+            Text A / Text B 阅读理解题目<br>
+            数据存储在 ima 知识库
         </div>
-        <div class="card-list">
-            <a class="card" href="reading-practice.html">
-                <div class="card-info">
-                    <span class="card-title">📖 阅读理解练习</span>
-                    <span class="card-subtitle">U1 / U3 · Multiple Choice</span>
-                </div>
-                <span class="card-badge">练习</span>
+        <div class="placeholder-box">
+            <strong>📌 阅读理解数据待提取</strong>
+            阅读理解题目存储在 ima 知识库的 Word 文档中<br>
+            请前往知识库查看完整内容
+            <a class="ima-link" href="https://ima.qq.com/wiki/?shareId=84ff2e40cb713e3c1ffc6ab356018018064e46443d449ae6e73911cb1f997f80" target="_blank">
+                📚 查看 ima 知识库
             </a>
         </div>
     </div>
 
     <div class="divider"></div>
 
-    <!-- 五、作文 -->
+    <!-- 五、作文练习（占位） -->
     <div class="section">
         <div class="section-title">✍️ 五、作文练习</div>
         <div class="section-desc">
-            写作提示 + 参考范文 · 作文练习<br>
-            当前使用样例数据（待接入 ima 真实数据）
+            写作题目 + 参考范文<br>
+            数据存储在 ima 知识库
         </div>
-        <div class="card-list">
-            <a class="card" href="writing-practice.html">
-                <div class="card-info">
-                    <span class="card-title">✍️ 作文练习</span>
-                    <span class="card-subtitle">U1 / U3 · 写作提示 + 范文</span>
-                </div>
-                <span class="card-badge">练习</span>
+        <div class="placeholder-box">
+            <strong>📌 作文题目数据待提取</strong>
+            写作题目和范文存储在 ima 知识库<br>
+            请前往知识库查看完整内容
+            <a class="ima-link" href="https://ima.qq.com/wiki/?shareId=84ff2e40cb713e3c1ffc6ab356018018064e46443d449ae6e73911cb1f997f80" target="_blank">
+                📚 查看 ima 知识库
             </a>
         </div>
     </div>
