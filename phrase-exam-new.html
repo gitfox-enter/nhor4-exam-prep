@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>短语考试 · 新版</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: linear-gradient(145deg, #1b3b4f 0%, #2a5f7a 100%);
+            min-height: 100vh; min-height: 100dvh;
+            display: flex; justify-content: center; align-items: flex-start;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 8px;
+        }
+        .game-container {
+            max-width: 800px; width: 100%;
+            background: rgba(255,255,255,0.13);
+            backdrop-filter: blur(4px);
+            padding: 1.2rem 1rem;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            font-weight: 500; color: #e9f2f7;
+            text-shadow: 0 2px 6px #0a1e2b;
+            letter-spacing: 1px;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 1rem; font-size: 1.3rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        h1 small {
+            font-size: 0.85rem; font-weight: 300; opacity: 0.8;
+            background: #1f4a5e; padding: 0.3rem 0.8rem;
+            border-radius: 60px; border: 1px solid #8fc3d9;
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .intro-text {
+            color: #bfdef0; font-size: 0.9rem;
+            line-height: 1.6; margin-bottom: 1rem;
+        }
+        .intro-text strong { color: #fcdb7a; }
+        
+        .btn {
+            background: #fad974; border: none;
+            padding: 10px 24px; border-radius: 60px;
+            font-weight: 600; font-size: 1rem; color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+            transition: 0.06s linear; cursor: pointer;
+            border: 1px solid #ffe399; letter-spacing: 0.3px;
+            display: inline-block;
+        }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #b3952b; }
+        
+        /* 考试界面 */
+        .exam-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;
+        }
+        .timer {
+            color: #fcdb7a; font-size: 1rem; font-weight: 600;
+            background: rgba(0,0,0,0.3); padding: 0.3rem 0.8rem;
+            border-radius: 60px;
+        }
+        .progress-text { color: #bfdef0; font-size: 0.9rem; }
+        .progress-text strong { color: #fcdb7a; }
+        
+        .progress-bar {
+            background: rgba(0,0,0,0.3); border-radius: 30px;
+            height: 6px; margin: 0.8rem 0; overflow: hidden;
+        }
+        .progress-fill {
+            background: #fad974; height: 6px; border-radius: 30px;
+            transition: width 0.25s ease;
+        }
+        
+        /* 题目区 */
+        .question-area {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .question-num {
+            color: #fcdb7a; font-size: 0.9rem;
+            font-weight: 600; margin-bottom: 0.5rem;
+        }
+        .sentence {
+            color: #e9f2f7; font-size: 1rem;
+            line-height: 1.8; margin-bottom: 0.8rem;
+        }
+        .sentence .blank {
+            color: #fcdb7a; font-weight: 600;
+            border-bottom: 2px dashed #fcdb7a;
+            padding: 0 4px; min-width: 80px;
+            display: inline-block; text-align: center;
+        }
+        .sentence .blank.filled {
+            border-bottom: 2px solid #4caf50;
+            color: #a5d6a7;
+        }
+        
+        /* 选项区 */
+        .options-title {
+            color: #bfdef0; font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        @media (min-width: 480px) {
+            .options { grid-template-columns: 1fr 1fr; }
+        }
+        .option {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(2px);
+            padding: 12px 14px; border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.15);
+            font-size: 0.9rem; font-weight: 500; color: white;
+            cursor: pointer; transition: all 0.1s ease;
+            user-select: none; text-align: center; word-break: break-word;
+        }
+        .option:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+        .option:active { transform: scale(0.97); }
+        .option.correct { 
+            border-color: #4caf50; background: rgba(76,175,80,0.2); 
+            color: #a5d6a7; 
+        }
+        .option.wrong { 
+            border-color: #ef5350; background: rgba(239,83,80,0.2); 
+            color: #ef9a9a; 
+        }
+        .option.disabled { pointer-events: none; opacity: 0.5; }
+        
+        /* 解析区 */
+        .analysis {
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .analysis.show { display: block; }
+        .analysis-title {
+            color: #fcdb7a; font-size: 0.9rem;
+            font-weight: 600; margin-bottom: 0.5rem;
+        }
+        .analysis-content {
+            color: #d4eaf5; font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .analysis-content .chinese {
+            color: #8fc3d9;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .analysis-content .tip {
+            color: #a5d6a7;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        /* 导航 */
+        .nav-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 1rem; padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 结果界面 */
+        .result-area { text-align: center; }
+        .score-display { font-size: 3rem; font-weight: 600; color: #fcdb7a; margin: 0.5rem 0; }
+        .score-label { color: #bfdef0; font-size: 1rem; margin-bottom: 1rem; }
+        .review-list {
+            text-align: left; max-height: 350px;
+            overflow-y: auto; margin: 1rem 0;
+        }
+        .review-item {
+            background: rgba(0,0,0,0.2); border-radius: 16px;
+            padding: 10px 14px; margin-bottom: 8px;
+            font-size: 0.85rem; color: #d4eaf5; line-height: 1.5;
+        }
+        .review-item .status { font-weight: 600; display: inline-block; margin-right: 6px; }
+        .review-item.correct .status { color: #a5d6a7; }
+        .review-item.wrong .status { color: #ef9a9a; }
+        .review-item .answer { color: #fcdb7a; font-weight: 500; }
+        
+        @media (max-width: 480px) {
+            .game-container { padding: 0.8rem 0.6rem; border-radius: 28px; }
+            h1 { font-size: 1.1rem; }
+            .option { font-size: 0.8rem; padding: 10px 12px; }
+            .sentence { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>📝 短语考试 <small>10道×2分</small></h1>
+
+    <!-- 考试界面 -->
+    <div class="screen active" id="screen-exam">
+        <div class="intro-text" id="exam-intro">
+            <p><strong>考试规则</strong></p>
+            <p>共 <strong>10</strong> 题，每题 <strong>2</strong> 分，共 <strong>20</strong> 分。</p>
+            <p>从所有短语中随机抽取，注意变形规则。</p>
+            <button class="btn" id="btn-start" style="margin-top: 1rem;">开始考试</button>
+        </div>
+        
+        <div id="exam-container" style="display:none;">
+            <div class="exam-header">
+                <div class="progress-text">进度: <strong id="progress-text">1/10</strong></div>
+                <div class="timer" id="timer">00:00</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+            
+            <div class="question-area">
+                <div class="question-num" id="question-num">题目 1</div>
+                <div class="sentence" id="sentence"></div>
+            </div>
+            
+            <div class="options-title">选择正确答案：</div>
+            <div class="options" id="options"></div>
+            
+            <div class="analysis" id="analysis">
+                <div class="analysis-title">📖 解析</div>
+                <div class="analysis-content" id="analysis-content"></div>
+            </div>
+            
+            <div class="nav-bar">
+                <button class="btn" id="btn-next" style="display:none;">下一题 →</button>
+                <button class="btn" id="btn-finish" style="display:none;">查看成绩</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div class="screen" id="screen-result">
+        <div class="result-area">
+            <div class="score-label">你的得分</div>
+            <div class="score-display" id="final-score">0</div>
+            <div class="score-label" id="score-comment"></div>
+            <div class="review-list" id="review-list"></div>
+            <button class="btn" id="btn-restart">🔄 再来一次</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // 完整数据（包含所有单元的短语）
+    const ALL_QUESTIONS = [
+        // U1 短语
+        { 
+            id: 1, 
+            unit: 'U1', 
+            sentence: 'With your generous support, our charity fund will be _____ for continued growth and success.', 
+            phrase: 'poised', 
+            chinese: '在 generous support 下，我们的慈善基金将_____持续成长和成功。',
+            analysis: '主语是 charity fund（第三人称单数），will be 后接形容词 poised（准备好的）。',
+            tip: 'poised 来自 poise（平衡、姿态），想象基金已经"摆好姿势"准备好成长。'
+        },
+        { 
+            id: 2, 
+            unit: 'U1', 
+            sentence: 'The dock was constructed on a(n) _____ scale with the most modern equipment.', 
+            phrase: 'lavish', 
+            chinese: '码头以_____规模建造，配备了最现代化的设备。',
+            analysis: '修饰名词 scale，用形容词原级 lavish（大量的、奢华的）。',
+            tip: 'lavish 联想 lavatory（洗手间）+ wish（愿望），想象一个奢华的洗手间。'
+        },
+        { 
+            id: 3, 
+            unit: 'U1', 
+            sentence: 'Advances in mobile phone technology have enabled the rapid development of _____ communication.', 
+            phrase: 'instantaneous', 
+            chinese: '手机技术的进步使得_____通信的快速发展成为可能。',
+            analysis: '修饰名词 communication，用形容词 instantaneous（即刻的、即时的）。',
+            tip: 'instantaneous = instant（瞬间）+ aneous，联想"即时通讯"。'
+        },
+        { 
+            id: 4, 
+            unit: 'U1', 
+            sentence: 'Computers, vehicles, paintings, furniture, etc. are all _____ assets.', 
+            phrase: 'tangible', 
+            chinese: '电脑、车辆、画作、家具等都是_____资产。',
+            analysis: '主语是复数，be 动词后接形容词 tangible（可触摸的、有形的）。',
+            tip: 'tangible 联想 tangle（纠缠），可以触摸到的纠缠 = 有形的。'
+        },
+        { 
+            id: 5, 
+            unit: 'U1', 
+            sentence: 'Students can overcome _____ together through teamwork.', 
+            phrase: 'hurdles', 
+            chinese: '学生们可以通过团队合作一起克服_____。',
+            analysis: 'overcome 后接名词复数 hurdles（障碍、栏架）。',
+            tip: 'hurdle 联想 hurdle race（跨栏比赛），跨栏就是克服障碍。'
+        },
+        { 
+            id: 7, 
+            unit: 'U1', 
+            sentence: 'Long-term confinement is _____ to the physical well-being of animals.', 
+            phrase: 'detrimental', 
+            chinese: '长期禁闭对动物的身体健康_____。',
+            analysis: 'be 动词后接形容词 detrimental（有害的、不利的）。',
+            tip: 'detrimental 联想 detriment（损害）+ al（形容词后缀），直接记忆"有害的"。'
+        },
+        { 
+            id: 8, 
+            unit: 'U1', 
+            sentence: 'The museum is designed to _____ the interest of children in science.', 
+            phrase: 'evoke', 
+            chinese: '博物馆旨在_____孩子们对科学的兴趣。',
+            analysis: 'be designed to 后接动词原形 evoke（引起、唤起）。',
+            tip: 'evoke 联想 evoke（发音：一伏克），想象"一伏击就唤起记忆"。'
+        },
+        { 
+            id: 10, 
+            unit: 'U1', 
+            sentence: 'If your stress is _____ into more serious issues, seek professional help.', 
+            phrase: 'escalating', 
+            chinese: '如果你的压力_____更严重的问题，请寻求专业帮助。',
+            analysis: 'is 后接现在分词构成进行时 escalating（升级、恶化）。',
+            tip: 'escalate 联想 escalator（自动扶梯），扶梯是一级一级"升级"的。'
+        },
+        
+        // U3 短语
+        { 
+            id: 11, 
+            unit: 'U3', 
+            sentence: 'The professor gave remarks to bring _____ to the issue being discussed.', 
+            phrase: 'clarity', 
+            chinese: '教授发表评论，以使正在讨论的问题更加_____。',
+            analysis: 'bring 后接名词 clarity（清晰、明确）。bring clarity to = 使...清晰。',
+            tip: 'clarity 来自 clear（清晰的）+ ity（名词后缀），直接记忆"清晰度"。'
+        },
+        { 
+            id: 13, 
+            unit: 'U3', 
+            sentence: 'The hotel is an ideal _____ for business meetings and weddings.', 
+            phrase: 'venue', 
+            chinese: '这家酒店是商务会议和婚礼的理想_____。',
+            analysis: 'an ideal 后接单数名词 venue（地点、场所）。',
+            tip: 'venue 联想 avenue（大道），大道是举办活动的好"场所"。'
+        },
+        { 
+            id: 15, 
+            unit: 'U3', 
+            sentence: 'The _____ of e-commerce has reshaped the way business is conducted.', 
+            phrase: 'emergence', 
+            chinese: '电子商务的_____改变了商业运作方式。',
+            analysis: 'the 后接名词 emergence（出现、兴起）。',
+            tip: 'emergence 来自 emerge（出现）+ ence（名词后缀），联想"电商的兴起"。'
+        },
+        { 
+            id: 19, 
+            unit: 'U3', 
+            sentence: 'The Chinese economy enjoys strong _____ despite challenges.', 
+            phrase: 'momentum', 
+            chinese: '尽管面临挑战，中国经济仍保持强劲的_____。',
+            analysis: 'strong 后接名词 momentum（势头、动力）。',
+            tip: 'momentum 联想 moment（时刻）+ um，想象"关键时刻的动力"。'
+        },
+        
+        // U4 短语
+        { 
+            id: 21, 
+            unit: 'U4', 
+            sentence: 'We must maintain the _____ of the building during restoration.', 
+            phrase: 'integrity', 
+            chinese: '我们在修复过程中必须保持建筑的_____。',
+            analysis: 'the 后接名词 integrity（完整性、正直）。',
+            tip: 'integrity 联想 integer（整数、完整的），完整的 = 完整性。'
+        },
+        { 
+            id: 22, 
+            unit: 'U4', 
+            sentence: 'A nurse\'s _____ response communicates respect and caring.', 
+            phrase: 'timely', 
+            chinese: '护士的_____反应传达了尊重和关怀。',
+            analysis: '修饰名词 response，用形容词 timely（及时的）。',
+            tip: 'timely = time（时间）+ ly（形容词后缀），"时间的" = 及时的。'
+        },
+        { 
+            id: 25, 
+            unit: 'U4', 
+            sentence: 'Rising _____ leads to consumption based more on wants than needs.', 
+            phrase: 'affluence', 
+            chinese: '日益增长的_____导致消费更多基于欲望而非需求。',
+            analysis: 'Rising 后接名词 affluence（富裕、富足）。',
+            tip: 'affluence 联想 fluent（流利的），"流利"的金钱流动 = 富裕。'
+        },
+        { 
+            id: 30, 
+            unit: 'U4', 
+            sentence: 'Scientists have made _____ achievements in hydrology research.', 
+            phrase: 'monumental', 
+            chinese: '科学家们在水利研究中取得了_____成就。',
+            analysis: '修饰名词 achievements，用形容词 monumental（纪念碑式的、重大的）。',
+            tip: 'monumental 来自 monument（纪念碑），纪念碑式的 = 重大的。'
+        },
+        
+        // U6 短语
+        { 
+            id: 31, 
+            unit: 'U6', 
+            sentence: 'These shelves store cell phones and other small _____.', 
+            phrase: 'gadgets', 
+            chinese: '这些架子上放着手机和其他小型_____。',
+            analysis: 'other small 后接复数名词 gadgets（小器具、小装置）。',
+            tip: 'gadget 联想 "盖得它"，盖得住的小装置 = 小器具。'
+        },
+        { 
+            id: 32, 
+            unit: 'U6', 
+            sentence: 'The only _____ choice is to embrace the technological revolution.', 
+            phrase: 'viable', 
+            chinese: '唯一_____选择是拥抱技术革命。',
+            analysis: '修饰名词 choice，用形容词 viable（可行的、能生存的）。',
+            tip: 'viable 联想 vi（罗马数字6）+ able（能够），6个都能 = 可行的。'
+        },
+    ];
+
+    // 游戏状态
+    let state = {
+        questions: [],
+        currentIndex: 0,
+        score: 0,
+        answers: [],
+        startTime: null,
+        timerInterval: null
+    };
+
+    // DOM 元素
+    const $ = id => document.getElementById(id);
+    const screenExam = $('screen-exam');
+    const screenResult = $('screen-result');
+    const examIntro = $('exam-intro');
+    const examContainer = $('exam-container');
+    const btnStart = $('btn-start');
+    const btnNext = $('btn-next');
+    const btnFinish = $('btn-finish');
+    const btnRestart = $('btn-restart');
+    const timerEl = $('timer');
+    const progressText = $('progress-text');
+    const progressFill = $('progress-fill');
+    const questionNum = $('question-num');
+    const sentenceEl = $('sentence');
+    const optionsEl = $('options');
+    const analysisEl = $('analysis');
+    const analysisContent = $('analysis-content');
+    const finalScore = $('final-score');
+    const scoreComment = $('score-comment');
+    const reviewList = $('review-list');
+
+    // 开始考试
+    btnStart.addEventListener('click', () => {
+        // 随机抽取10题
+        state.questions = shuffleArray([...ALL_QUESTIONS]).slice(0, 10);
+        state.currentIndex = 0;
+        state.score = 0;
+        state.answers = [];
+        state.startTime = Date.now();
+        
+        examIntro.style.display = 'none';
+        examContainer.style.display = 'block';
+        
+        startTimer();
+        showQuestion();
+    });
+
+    // 显示题目
+    function showQuestion() {
+        const q = state.questions[state.currentIndex];
+        
+        // 更新进度
+        progressText.textContent = `${state.currentIndex + 1}/${state.questions.length}`;
+        progressFill.style.width = `${((state.currentIndex) / state.questions.length) * 100}%`;
+        
+        // 显示题目编号
+        questionNum.textContent = `题目 ${state.currentIndex + 1}`;
+        
+        // 显示句子（挖空）
+        sentenceEl.innerHTML = highlightBlank(q.sentence, q.phrase);
+        
+        // 生成选项（1个正确 + 3个干扰项）
+        const options = generateOptions(q);
+        optionsEl.innerHTML = '';
+        options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.textContent = opt;
+            div.dataset.phrase = opt;
+            div.addEventListener('click', () => selectOption(div, q));
+            optionsEl.appendChild(div);
+        });
+        
+        // 隐藏解析和下一题按钮
+        analysisEl.classList.remove('show');
+        btnNext.style.display = 'none';
+        
+        // 更新按钮状态
+        if (state.currentIndex === state.questions.length - 1) {
+            btnFinish.style.display = 'none';
+        }
+    }
+
+    // 高亮空白
+    function highlightBlank(sentence, phrase) {
+        return sentence.replace('_____', `<span class="blank">_____</span>`);
+    }
+
+    // 生成选项
+    function generateOptions(q) {
+        const correct = q.phrase;
+        const others = ALL_QUESTIONS
+            .filter(item => item.phrase !== correct)
+            .map(item => item.phrase);
+        const shuffled = shuffleArray(others).slice(0, 3);
+        return shuffleArray([correct, ...shuffled]);
+    }
+
+    // 选择选项
+    function selectOption(el, q) {
+        const selected = el.dataset.phrase;
+        const correct = q.phrase;
+        
+        // 禁用所有选项
+        optionsEl.querySelectorAll('.option').forEach(opt => {
+            opt.classList.add('disabled');
+            if (opt.dataset.phrase === correct) {
+                opt.classList.add('correct');
+            }
+            if (opt.dataset.phrase === selected && selected !== correct) {
+                opt.classList.add('wrong');
+            }
+        });
+        
+        // 显示解析
+        analysisContent.innerHTML = `
+            <div><strong>正确答案：</strong>${correct}</div>
+            <div class="chinese"><strong>中文翻译：</strong>${q.chinese}</div>
+            <div style="margin-top: 0.5rem;"><strong>解析：</strong>${q.analysis}</div>
+            <div class="tip"><strong>记忆技巧：</strong>${q.tip}</div>
+        `;
+        analysisEl.classList.add('show');
+        
+        // 记录答案
+        const isCorrect = selected === correct;
+        if (isCorrect) state.score += 2;
+        state.answers.push({
+            question: q,
+            selected: selected,
+            correct: correct,
+            isCorrect: isCorrect
+        });
+        
+        // 显示下一题或完成按钮
+        if (state.currentIndex < state.questions.length - 1) {
+            btnNext.style.display = 'inline-block';
+        } else {
+            btnFinish.style.display = 'inline-block';
+        }
+    }
+
+    // 下一题
+    btnNext.addEventListener('click', () => {
+        state.currentIndex++;
+        showQuestion();
+    });
+
+    // 完成考试
+    btnFinish.addEventListener('click', () => {
+        clearInterval(state.timerInterval);
+        showResult();
+    });
+
+    // 显示结果
+    function showResult() {
+        screenExam.classList.remove('active');
+        screenResult.classList.add('active');
+        
+        const totalScore = state.score;
+        finalScore.textContent = totalScore;
+        
+        // 评语
+        if (totalScore >= 18) {
+            scoreComment.textContent = '🎉 优秀！你对短语掌握得很好！';
+        } else if (totalScore >= 14) {
+            scoreComment.textContent = '👍 良好！继续加油！';
+        } else if (totalScore >= 10) {
+            scoreComment.textContent = '📖 及格了，但还需要加强练习！';
+        } else {
+            scoreComment.textContent = '💪 加油！多复习几遍吧！';
+        }
+        
+        // 复习列表
+        reviewList.innerHTML = '';
+        state.answers.forEach((ans, idx) => {
+            const div = document.createElement('div');
+            div.className = `review-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+            div.innerHTML = `
+                <span class="status">${ans.isCorrect ? '✓' : '✗'}</span>
+                <span class="sentence">${ans.question.sentence.replace('_____', '_____')}</span><br>
+                <span class="answer">你的答案：${ans.selected} ${ans.isCorrect ? '' : `（正确答案：${ans.correct}）`}</span>
+            `;
+            reviewList.appendChild(div);
+        });
+    }
+
+    // 重新开始
+    btnRestart.addEventListener('click', () => {
+        screenResult.classList.remove('active');
+        screenExam.classList.add('active');
+        examIntro.style.display = 'block';
+        examContainer.style.display = 'none';
+        timerEl.textContent = '00:00';
+    });
+
+    // 计时器
+    function startTimer() {
+        clearInterval(state.timerInterval);
+        state.timerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const secs = (elapsed % 60).toString().padStart(2, '0');
+            timerEl.textContent = `${mins}:${secs}`;
+        }, 1000);
+    }
+
+    // 打乱数组
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+})();
+</script>
+</body>
+</html>
