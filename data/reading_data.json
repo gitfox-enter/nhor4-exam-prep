@@ -1,0 +1,118 @@
+[
+  {
+    "unit": "U1",
+    "title": "U1 Text A",
+    "passage": "",
+    "questions": [
+      {
+        "question": "What is the main idea of this passage?",
+        "options": [
+          "Technology brings people closer together",
+          "Digital devices have changed how we communicate and interact",
+          "People should avoid using cell phones completely",
+          "Family time is not important anymore"
+        ],
+        "answer": 1,
+        "explanation": "The passage discusses how digital devices and constant connectivity have changed human behavior and communication patterns."
+      },
+      {
+        "question": "What does the author mean by \"alone together\"?",
+        "options": [
+          "Being physically alone but mentally connected",
+          "Being physically together but mentally elsewhere due to technology",
+          "Having no friends in the digital age",
+          "Preferring to be alone rather than with others"
+        ],
+        "answer": 1,
+        "explanation": "\"Alone together\" refers to the phenomenon where people are physically present with each other but mentally disconnected due to their devices."
+      },
+      {
+        "question": "According to the passage, what have we sacrificed for connection?",
+        "options": [
+          "Money and time",
+          "Conversation and genuine human interaction",
+          "Our jobs and careers",
+          "Our physical health"
+        ],
+        "answer": 1,
+        "explanation": "The passage states \"we have sacrificed conversation for connection\" - meaning we've lost genuine human interaction in favor of digital connectivity."
+      }
+    ]
+  },
+  {
+    "unit": "U3",
+    "title": "U3 Text A",
+    "passage": "",
+    "questions": [
+      {
+        "question": "What is the surprising purpose of travel according to the passage?",
+        "options": [
+          "To buy souvenirs",
+          "To escape from work stress",
+          "To enhance creative thinking",
+          "To meet new people"
+        ],
+        "answer": 2,
+        "explanation": "The passage states that \"getting away is an essential habit of effective thinking\" and travel helps realize \"the creative benefits\"."
+      },
+      {
+        "question": "Why does the author mention the inconveniences of travel?",
+        "options": [
+          "To discourage people from traveling",
+          "To show that travel is always unpleasant",
+          "To contrast with the benefits and explain why people still travel",
+          "To complain about airports"
+        ],
+        "answer": 2,
+        "explanation": "The author mentions travel annoyances to contrast them with the excitement of being somewhere new, explaining why people choose to travel despite the hassles."
+      },
+      {
+        "question": "What does the author say about modern aviation?",
+        "options": [
+          "It is too expensive",
+          "It allows us to move faster than ever before",
+          "It is not necessary for creative thinking",
+          "It causes too much pollution"
+        ],
+        "answer": 1,
+        "explanation": "The passage mentions that modern aviation allows us to \"move through space at an inhuman speed\" and \"outrun the sun\" for the first time in human history."
+      }
+    ]
+  },
+  {
+    "unit": "U4",
+    "title": "U4 Text A",
+    "passage": "",
+    "questions": [
+      {
+        "question": "What is the main topic of this passage?",
+        "options": [
+          "Technology and communication",
+          "Travel and creativity",
+          "Life choices and decision-making",
+          "Education and learning"
+        ],
+        "answer": 2,
+        "explanation": "Based on the unit theme, this passage discusses life choices and how we make decisions."
+      }
+    ]
+  },
+  {
+    "unit": "U6",
+    "title": "U6 Text A",
+    "passage": "",
+    "questions": [
+      {
+        "question": "What is the main topic of this passage?",
+        "options": [
+          "Technology and communication",
+          "Travel and creativity",
+          "Life choices and decision-making",
+          "Science and discovery"
+        ],
+        "answer": 3,
+        "explanation": "Based on the unit theme, this passage discusses scientific discovery and innovation."
+      }
+    ]
+  }
+]

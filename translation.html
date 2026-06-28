@@ -6,11 +6,7 @@
     <title>翻译题 · 对照记忆卡片（真实数据版）</title>
     <script src="data/translations.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: linear-gradient(145deg, #1b3b4f 0%, #2a5f7a 100%);
             min-height: 100vh;
@@ -22,7 +18,7 @@
             padding: 12px;
         }
         .game-container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             background: rgba(255, 255, 255, 0.13);
             backdrop-filter: blur(4px);
@@ -43,6 +39,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         h1 small {
             font-size: 0.85rem;
@@ -71,10 +69,7 @@
             transition: 0.15s;
             backdrop-filter: blur(2px);
         }
-        .level-btn:hover {
-            background: rgba(255,255,255,0.18);
-            border-color: rgba(255,255,255,0.3);
-        }
+        .level-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
         .level-btn.active {
             background: #fad974;
             border-color: #ffe399;
@@ -85,333 +80,353 @@
             background: rgba(255,255,255,0.08);
             border: 2px solid rgba(255,255,255,0.12);
             border-radius: 24px;
-            padding: 1rem 1.2rem;
+            padding: 1.2rem;
             margin-bottom: 1rem;
             transition: all 0.2s;
         }
+        .card-item:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.8rem;
+        }
+        .card-num {
+            background: #fad974;
+            color: #1d3f4a;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .card-label {
+            color: #8fc3d9;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
         .card-english {
             color: #e9f2f7;
-            font-size: 0.9rem;
-            line-height: 1.8;
-            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            line-height: 2;
+            margin-bottom: 1rem;
             font-weight: 500;
+            background: rgba(0,0,0,0.15);
+            padding: 1rem;
+            border-radius: 16px;
+            border-left: 4px solid #fad974;
         }
         .card-chinese {
             color: #fcdb7a;
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 0.5rem;
-            padding: 0.8rem;
-            background: rgba(0,0,0,0.2);
+            font-size: 1rem;
+            line-height: 1.9;
+            font-weight: 500;
+            background: rgba(250, 217, 116, 0.1);
+            padding: 1rem;
             border-radius: 16px;
-            display: none;
+            border-left: 4px solid #fcdb7a;
         }
-        .card-chinese.show {
-            display: block;
+        .annotation {
+            color: #8fc3d9;
+            font-weight: 600;
+            background: rgba(143, 195, 217, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
         }
-        .card-actions {
+        .mode-toggle {
             display: flex;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
-        .btn-small {
-            padding: 6px 14px;
-            font-size: 0.8rem;
-            border-radius: 40px;
+        .mode-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            color: #bfdef0;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .mode-btn.active {
+            background: #8fc3d9;
+            border-color: #8fc3d9;
+            color: #1d3f4a;
+        }
+        .exam-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+        }
+        .exam-title {
+            color: #fad974;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .exam-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+        }
+        .exam-question {
+            color: #e9f2f7;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+        .exam-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #e9f2f7;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+        .exam-input::placeholder { color: rgba(255,255,255,0.4); }
+        .exam-input:focus {
+            outline: none;
+            border-color: #fad974;
+        }
+        .check-btn {
+            background: linear-gradient(135deg, #fad974, #f5c542);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 24px;
+            color: #1d3f4a;
             font-weight: 600;
             cursor: pointer;
-            border: none;
-            transition: 0.1s;
+            transition: 0.2s;
         }
-        .btn-reveal {
-            background: #264e63;
-            color: #bfdef0;
-            border: 1px solid #578aa3;
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(250, 217, 116, 0.3);
         }
-        .btn-mark {
-            background: #1d4d4b;
-            color: #a5d6a7;
-            border: 1px solid #479f9b;
+        .result {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
         }
-        .btn-mark.marked {
-            background: #fad974;
-            color: #1d3f4a;
-            border-color: #ffe399;
+        .result.correct {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            color: #81c784;
         }
-        .progress-bar {
-            background: rgba(0,0,0,0.3);
-            border-radius: 30px;
-            height: 6px;
-            margin: 0 0 1rem;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: #fad974;
-            height: 6px;
-            border-radius: 30px;
-            transition: width 0.25s ease;
+        .result.wrong {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.4);
+            color: #e57373;
         }
         .nav-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 1rem;
-            padding-top: 0.8rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .progress-text {
-            color: #bfdef0;
+        .nav-link {
+            color: #8fc3d9;
+            text-decoration: none;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
         }
-        .progress-text strong {
-            color: #fcdb7a;
+        .nav-link:hover { color: #fad974; }
+        .format-tip {
+            background: rgba(143, 195, 217, 0.15);
+            border: 1px solid rgba(143, 195, 217, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            color: #8fc3d9;
+            font-size: 0.85rem;
         }
-        .btn {
-            background: #fad974;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #1d3f4a;
-            box-shadow: 0 4px 0 #b3952b;
-            transition: 0.06s linear;
-            cursor: pointer;
-            border: 1px solid #ffe399;
-            letter-spacing: 0.3px;
-            display: inline-block;
-        }
-        .btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #b3952b;
-        }
-        .intro-text {
-            color: #bfdef0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.2rem;
-        }
-        .intro-text strong {
-            color: #fcdb7a;
-        }
-        @media (max-width: 480px) {
-            .game-container {
-                padding: 0.8rem 0.6rem;
-                border-radius: 28px;
-            }
-            h1 {
-                font-size: 1.1rem;
-            }
-            .card-english, .card-chinese {
-                font-size: 0.82rem;
-            }
-        }
+        .format-tip strong { color: #fad974; }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <h1>📖 翻译题 <small>真实数据版 · 对照记忆</small></h1>
+    <div class="game-container">
+        <h1>
+            📝 翻译题练习
+            <small id="unit-label">选择单元</small>
+        </h1>
 
-    <div class="level-grid" id="levelGrid"></div>
-
-    <!-- Intro Screen -->
-    <div class="screen active" id="screen-intro">
-        <div class="intro-text">
-            <p><strong>使用方法</strong></p>
-            <p>• 选择上方单元，开始翻译练习</p>
-            <p>• 先自己尝试翻译英文句子</p>
-            <p>• 点击<strong>"查看翻译"</strong>对照标准答案</p>
-            <p>• 会了就点<strong>"记住了"</strong>，不熟点<strong>"需复习"</strong></p>
-            <p style="margin-top:0.8rem; color:#fcdb7a;">✨ 数据来源：ima 知识库真实翻译题</p>
+        <div class="format-tip">
+            <strong>📌 考试格式要求：</strong>在生词或关键词后面加括号写中文，再把整句的中文意思串起来讲
         </div>
-        <button class="btn" id="btn-start">▶ 开始学习</button>
-    </div>
 
-    <!-- Cards Screen -->
-    <div class="screen" id="screen-cards">
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-        <div id="cards-container"></div>
+        <div class="level-grid" id="levelGrid">
+            <button class="level-btn active" data-unit="U1">Unit 1</button>
+            <button class="level-btn" data-unit="U3">Unit 3</button>
+            <button class="level-btn" data-unit="U4">Unit 4</button>
+            <button class="level-btn" data-unit="U6">Unit 6</button>
+        </div>
+
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="study">📖 学习模式</button>
+            <button class="mode-btn" data-mode="exam">✍️ 考试模式</button>
+        </div>
+
+        <div id="contentArea">
+            <!-- 内容将在这里动态生成 -->
+        </div>
+
         <div class="nav-bar">
-            <span class="progress-text">进度: <strong id="card-progress">0/0</strong></span>
+            <a href="index.html" class="nav-link">← 返回首页</a>
+            <a href="word-exam-v2.html" class="nav-link">单词练习 →</a>
         </div>
     </div>
 
-    <!-- Result Screen -->
-    <div class="screen" id="screen-result">
-        <div style="text-align:center;">
-            <div style="font-size:1rem; color:#bfdef0; margin-bottom:0.5rem;">复习统计</div>
-            <div style="font-size:2.5rem; font-weight:600; color:#fcdb7a; margin:0.5rem 0;" id="result-stats">0/0</div>
-            <div style="color:#bfdef0; font-size:1rem; margin-bottom:1rem;" id="result-comment"></div>
-            <div style="text-align:left; max-height:350px; overflow-y:auto; margin:1rem 0;" id="result-list"></div>
-            <button class="btn" id="btn-restart">🔄 重新开始</button>
-        </div>
-    </div>
-</div>
+    <script>
+        let currentUnit = 'U1';
+        let currentMode = 'study';
 
-<script>
-(function(){
-    // 检查数据是否加载
-    if (typeof TRANSLATIONS_DATA === 'undefined') {
-        alert('数据未加载！请确保 data/translations.js 文件存在。');
-        return;
-    }
+        // 解析英文，高亮括号注释
+        function formatEnglish(text) {
+            // 将括号内容用span包裹
+            return text.replace(/（([^）]+)）/g, '<span class="annotation">（$1）</span>');
+        }
 
-    const UNITS = ['U1', 'U3', 'U4', 'U6'];
-    let currentUnitIndex = 0;
-    let cardStates = [];
+        // 渲染学习模式
+        function renderStudyMode() {
+            const container = document.getElementById('contentArea');
+            const data = TRANSLATIONS_DATA[currentUnit] || [];
 
-    const levelGrid = document.getElementById('levelGrid');
-    const screenIntro = document.getElementById('screen-intro');
-    const screenCards = document.getElementById('screen-cards');
-    const screenResult = document.getElementById('screen-result');
-    const cardsContainer = document.getElementById('cards-container');
-    const progressFill = document.getElementById('progress-fill');
-    const cardProgress = document.getElementById('card-progress');
-    const btnStart = document.getElementById('btn-start');
-    const btnRestart = document.getElementById('btn-restart');
+            if (data.length === 0) {
+                container.innerHTML = '<div style="color:#8fc3d9;text-align:center;padding:2rem;">该单元暂无数据</div>';
+                return;
+            }
 
-    function showScreen(screen) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        screen.classList.add('active');
-    }
-
-    function renderLevels() {
-        levelGrid.innerHTML = '';
-        UNITS.forEach((unit, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'level-btn' + (idx === currentUnitIndex ? ' active' : '');
-            btn.textContent = unit + ' (' + TRANSLATIONS_DATA[unit].length + '句)';
-            btn.addEventListener('click', () => {
-                currentUnitIndex = idx;
-                renderLevels();
-            });
-            levelGrid.appendChild(btn);
-        });
-    }
-
-    function startCards() {
-        const unit = UNITS[currentUnitIndex];
-        const translations = TRANSLATIONS_DATA[unit];
-        cardStates = translations.map(() => ({ revealed: false, marked: false }));
-        showScreen(screenCards);
-        renderCards();
-        updateProgress();
-    }
-
-    function renderCards() {
-        const unit = UNITS[currentUnitIndex];
-        const translations = TRANSLATIONS_DATA[unit];
-        cardsContainer.innerHTML = '';
-        
-        translations.forEach((t, idx) => {
-            const state = cardStates[idx];
-            const div = document.createElement('div');
-            div.className = 'card-item';
-            div.innerHTML = `
-                <div class="card-english">${t.english}</div>
-                <div class="card-chinese ${state.revealed ? 'show' : ''}" id="chinese-${idx}">
-                    <div style="font-size:0.75rem; font-weight:600; margin-bottom:0.3rem; color:#bfdef0; letter-spacing:1px;">📖 整句中文意思</div>
-                    ${t.chinese}
+            container.innerHTML = data.map(item => `
+                <div class="card-item">
+                    <div class="card-header">
+                        <span class="card-num">${item.num}</span>
+                        <span class="card-label">翻译题 ${item.num}</span>
+                    </div>
+                    <div class="card-english">
+                        ${formatEnglish(item.english)}
+                    </div>
+                    <div class="card-chinese">
+                        ${item.chinese}
+                    </div>
                 </div>
-                <div class="card-actions">
-                    <button class="btn-small btn-reveal" data-idx="${idx}">${state.revealed ? '🔒 隐藏翻译' : '👁 查看翻译'}</button>
-                    <button class="btn-small btn-mark ${state.marked ? 'marked' : ''}" data-idx="${idx}">${state.marked ? '✅ 已记住' : '⭐ 记住了'}</button>
+            `).join('');
+        }
+
+        // 渲染考试模式
+        function renderExamMode() {
+            const container = document.getElementById('contentArea');
+            const data = TRANSLATIONS_DATA[currentUnit] || [];
+
+            if (data.length === 0) {
+                container.innerHTML = '<div style="color:#8fc3d9;text-align:center;padding:2rem;">该单元暂无数据</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="exam-section">
+                    <div class="exam-title">📝 ${currentUnit} 翻译考试</div>
+                    <p style="color:#8fc3d9;margin-bottom:1rem;font-size:0.9rem;">
+                        请根据中文意思，写出带括号注释的英文原文
+                    </p>
+                    ${data.map((item, idx) => `
+                        <div class="exam-item" data-idx="${idx}">
+                            <div class="exam-question">
+                                <strong>第 ${item.num} 题：</strong>${item.chinese}
+                            </div>
+                            <textarea
+                                class="exam-input"
+                                rows="3"
+                                placeholder="请写出英文原文（在生词/关键词后加括号中文注释）..."
+                                data-answer="${item.english.replace(/"/g, '&quot;')}"
+                            ></textarea>
+                            <button class="check-btn" onclick="checkAnswer(${idx})">检查答案</button>
+                            <div class="result" id="result-${idx}" style="display:none;"></div>
+                        </div>
+                    `).join('')}
                 </div>
             `;
-            cardsContainer.appendChild(div);
-        });
-
-        cardsContainer.querySelectorAll('.btn-reveal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                cardStates[idx].revealed = !cardStates[idx].revealed;
-                const chinese = document.getElementById(`chinese-${idx}`);
-                chinese.classList.toggle('show');
-                e.target.textContent = cardStates[idx].revealed ? '🔒 隐藏翻译' : '👁 查看翻译';
-                updateProgress();
-            });
-        });
-
-        cardsContainer.querySelectorAll('.btn-mark').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                cardStates[idx].marked = !cardStates[idx].marked;
-                e.target.classList.toggle('marked');
-                e.target.textContent = cardStates[idx].marked ? '✅ 已记住' : '⭐ 记住了';
-                updateProgress();
-            });
-        });
-    }
-
-    function updateProgress() {
-        const unit = UNITS[currentUnitIndex];
-        const total = TRANSLATIONS_DATA[unit].length;
-        const revealed = cardStates.filter(s => s.revealed).length;
-        const marked = cardStates.filter(s => s.marked).length;
-        
-        cardProgress.textContent = `${revealed}/${total} 查看 | ${marked}/${total} 记住`;
-        progressFill.style.width = `${(revealed / total) * 100}%`;
-    }
-
-    function showResult() {
-        const unit = UNITS[currentUnitIndex];
-        const total = TRANSLATIONS_DATA[unit].length;
-        const marked = cardStates.filter(s => s.marked).length;
-        
-        showScreen(screenResult);
-        document.getElementById('result-stats').textContent = `${marked}/${total}`;
-        
-        let comment = '';
-        if (marked >= total * 0.9) {
-            comment = '🎉 优秀！翻译掌握得很好！';
-        } else if (marked >= total * 0.7) {
-            comment = '👍 良好！继续加油！';
-        } else if (marked >= total * 0.5) {
-            comment = '📖 及格了，但还需要加强！';
-        } else {
-            comment = '💪 加油！多复习几遍！';
         }
-        document.getElementById('result-comment').textContent = comment;
-        
-        const resultList = document.getElementById('result-list');
-        resultList.innerHTML = '';
-        cardStates.forEach((state, idx) => {
-            const t = TRANSLATIONS_DATA[unit][idx];
-            const div = document.createElement('div');
-            div.style.cssText = 'background:rgba(0,0,0,0.2); border-radius:16px; padding:10px 14px; margin-bottom:8px; font-size:0.85rem; color:#d4eaf5; line-height:1.5;';
-            div.innerHTML = `
-                <span style="font-weight:600; margin-right:6px; color:${state.marked ? '#a5d6a7' : '#ef9a9a'};">${state.marked ? '✓' : '✗'}</span>
-                <span>${t.english.substring(0, 50)}...</span>
-            `;
-            resultList.appendChild(div);
-        });
-    }
 
-    btnStart.addEventListener('click', () => {
-        startCards();
-    });
+        // 检查答案
+        function checkAnswer(idx) {
+            const item = document.querySelector(`[data-idx="${idx}"]`);
+            const input = item.querySelector('.exam-input');
+            const result = document.getElementById(`result-${idx}`);
+            const correctAnswer = input.dataset.answer;
+            const userAnswer = input.value.trim();
 
-    btnRestart.addEventListener('click', () => {
-        renderLevels();
-        showScreen(screenIntro);
-    });
+            if (!userAnswer) {
+                result.innerHTML = '⚠️ 请先输入答案';
+                result.className = 'result wrong';
+                result.style.display = 'block';
+                return;
+            }
 
-    // 初始渲染
-    renderLevels();
-    
-    // 添加"完成"按钮到卡片界面
-    const finishBtn = document.createElement('button');
-    finishBtn.className = 'btn';
-    finishBtn.textContent = '完成复习';
-    finishBtn.style.cssText = 'margin-left:12px; font-size:0.9rem; padding:8px 16px;';
-    document.querySelector('.nav-bar').appendChild(finishBtn);
-    
-    finishBtn.addEventListener('click', () => {
-        if (confirm('确定要结束复习吗？')) {
-            showResult();
+            // 简化比较：去除标点和空格
+            const normalize = (s) => s.toLowerCase().replace(/[，。！？、；：""''（）【】\s]/g, '');
+            const isCorrect = normalize(userAnswer).includes(normalize(correctAnswer).substring(0, 30)) ||
+                             normalize(correctAnswer).includes(normalize(userAnswer).substring(0, 30));
+
+            if (isCorrect) {
+                result.innerHTML = '✅ 正确！';
+                result.className = 'result correct';
+            } else {
+                result.innerHTML = `❌ 需要再努力<br><br><strong>参考答案：</strong><br>${formatEnglish(correctAnswer)}`;
+                result.className = 'result wrong';
+            }
+            result.style.display = 'block';
         }
-    });
-})();
-</script>
+
+        // 渲染内容
+        function render() {
+            if (currentMode === 'study') {
+                renderStudyMode();
+            } else {
+                renderExamMode();
+            }
+        }
+
+        // 事件监听
+        document.getElementById('levelGrid').addEventListener('click', (e) => {
+            if (e.target.classList.contains('level-btn')) {
+                document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentUnit = e.target.dataset.unit;
+                document.getElementById('unit-label').textContent = currentUnit;
+                render();
+            }
+        });
+
+        document.querySelector('.mode-toggle').addEventListener('click', (e) => {
+            if (e.target.classList.contains('mode-btn')) {
+                document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentMode = e.target.dataset.mode;
+                render();
+            }
+        });
+
+        // 初始化
+        render();
+    </script>
 </body>
 </html>
