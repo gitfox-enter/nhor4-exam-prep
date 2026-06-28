@@ -114,12 +114,6 @@
             transform: translateY(3px);
             box-shadow: 0 1px 0 #b3952b;
         }
-        .btn-secondary {
-            background: #b6d2df;
-            color: #1a3e4e;
-            box-shadow: 0 4px 0 #0d2a36;
-            border-color: #bad7e6;
-        }
         .card-item {
             background: rgba(255,255,255,0.08);
             border: 2px solid rgba(255,255,255,0.12);
@@ -133,16 +127,20 @@
         }
         .card-english {
             color: #e9f2f7;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            line-height: 1.8;
             margin-bottom: 0.8rem;
             font-weight: 500;
+        }
+        .card-english .cn {
+            color: #8fc3d9;
+            font-weight: 400;
         }
         .card-chinese {
             color: #fcdb7a;
             font-size: 0.95rem;
             line-height: 1.7;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             padding: 0.8rem;
             background: rgba(0,0,0,0.2);
             border-radius: 16px;
@@ -150,6 +148,13 @@
         }
         .card-chinese.show {
             display: block;
+        }
+        .card-chinese-label {
+            color: #bfdef0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
         }
         .card-actions {
             display: flex;
@@ -257,7 +262,7 @@
                 font-size: 1.1rem;
             }
             .card-english, .card-chinese {
-                font-size: 0.85rem;
+                font-size: 0.82rem;
             }
         }
     </style>
@@ -285,17 +290,6 @@
         <div id="cards-container"></div>
         <div class="nav-bar">
             <span class="progress-text">进度: <strong id="card-progress">0/0</strong></span>
-            <button class="btn btn-secondary" id="btn-exam" style="display:none;">📝 进入模拟考试</button>
-        </div>
-    </div>
-
-    <!-- Exam Screen -->
-    <div class="screen" id="screen-exam">
-        <div class="progress-bar"><div class="progress-fill" id="exam-progress" style="width:0%"></div></div>
-        <div id="exam-container"></div>
-        <div class="nav-bar">
-            <span class="progress-text">进度: <strong id="exam-text">0/0</strong></span>
-            <button class="btn btn-secondary" id="btn-back">⬅ 返回卡片</button>
         </div>
     </div>
 
@@ -317,53 +311,83 @@
         {
             id: 1, title: '城乡一体化 (U1)', unit: 'U1',
             sentences: [
-                { english: "Urban-rural integration is a new stage in China's development toward modernization and urbanization.", chinese: "城乡一体化是我国现代化和城市化发展的一个新阶段。" },
-                { english: "It aims to eliminate the urban-rural dual economic structure through integrated planning for urban and rural development, and through institutional reform and policy adjustment, so that the urban and rural areas will achieve policy equality and complement each other in the mode of industrial development, enabling rural residents to enjoy the same civilization and welfare as urban residents.", chinese: "其目的是通过对城乡发展进行统筹规划，并通过体制改革和政策调整，破除城乡二元经济结构，从而实现城乡在政策上平等、在产业发展模式上互补，让农村居民享受到与城镇居民同样的文明和福利。" },
-                { english: "Only by greatly promoting urban-rural integration can the whole urban and rural economy of our country develop comprehensively and sustainably.", chinese: "只有大力推进城乡一体化，我国整个城乡经济才能实现全面、可持续发展。" }
+                {
+                    english_annotated: 'Urban-rural integration<span class="cn">（城乡一体化）</span> is a new stage<span class="cn">（新阶段）</span> in China\'s development<span class="cn">（发展）</span> toward modernization<span class="cn">（现代化）</span> and urbanization<span class="cn">（城市化）</span>.',
+                    chinese_full: '城乡一体化是我国现代化和城市化发展的一个新阶段。'
+                },
+                {
+                    english_annotated: 'It aims to eliminate the urban-rural dual economic structure through integrated planning for urban and rural development, and through institutional reform and policy adjustment, so that the urban and rural areas will achieve policy equality and complement each other in the mode of industrial development, enabling rural residents to enjoy the same civilization and welfare as urban residents.',
+                    chinese_full: '其目的是通过对城乡发展进行统筹规划，并通过体制改革和政策调整，破除城乡二元经济结构，从而实现城乡在政策上平等、在产业发展模式上互补，让农村居民享受到与城镇居民同样的文明和福利。'
+                },
+                {
+                    english_annotated: 'Only by greatly promoting urban-rural integration can the whole urban and rural economy of our country develop comprehensively and sustainably.',
+                    chinese_full: '只有大力推进城乡一体化，我国整个城乡经济才能实现全面、可持续发展。'
+                }
             ]
         },
         {
             id: 2, title: '生态保护 (U4)', unit: 'U4',
             sentences: [
-                { english: "Since the reform and opening up, the Chinese government has taken a series of measures to improve the ecological environment and protect biodiversity.", chinese: "改革开放以来，中国政府采取了一系列改善生态环境、保护生物多样性的措施。" },
-                { english: "Many key ecological projects have been advanced or implemented, and a large number of nature reserves, ecological demonstration zones and forest parks have been successively established.", chinese: "许多重点生态工程得到推进或实施，一大批自然保护区、生态示范区和森林公园先后被设立。" },
-                { english: "In the future, we should further enhance the diversity, stability, and sustainability of our ecosystems. We should uphold and act on the principle that lucid waters and lush mountains are invaluable assets, and remember to maintain the harmony between humanity and nature when planning our development.", chinese: "今后，我们还需要进一步提升生态系统的多样性、稳定性、持续性，牢固树立和践行绿水青山就是金山银山的理念，站在人与自然和谐共生的高度谋划发展。" }
+                {
+                    english_annotated: 'Since the reform and opening up, the Chinese government has taken a series of measures to improve the ecological environment and protect biodiversity.',
+                    chinese_full: '改革开放以来，中国政府采取了一系列改善生态环境、保护生物多样性的措施。'
+                },
+                {
+                    english_annotated: 'Many key ecological projects have been advanced or implemented, and a large number of nature reserves, ecological demonstration zones and forest parks have been successively established.',
+                    chinese_full: '许多重点生态工程得到推进或实施，一大批自然保护区、生态示范区和森林公园先后被设立。'
+                },
+                {
+                    english_annotated: 'In the future, we should further enhance the diversity, stability, and sustainability of our ecosystems. We should uphold and act on the principle that lucid waters and lush mountains are invaluable assets, and remember to maintain the harmony between humanity and nature when planning our development.',
+                    chinese_full: '今后，我们还需要进一步提升生态系统的多样性、稳定性、持续性，牢固树立和践行绿水青山就是金山银山的理念，站在人与自然和谐共生的高度谋划发展。'
+                }
             ]
         },
         {
             id: 3, title: '国际传播 (U3)', unit: 'U3',
             sentences: [
-                { english: "With the rapid development of our society and economy, China is playing an increasingly important role in the international arena.", chinese: "随着社会和经济的飞速发展，中国在国际舞台上发挥着越来越大的作用。" },
-                { english: "In this context, we should stay firmly rooted in Chinese culture, accelerate the establishment of China's discourse and narrative systems. We should better present China to the world, make China's voice better heard, and present China as a country worthy of friendship, trust, and respect.", chinese: "在此背景下，我们必须坚守中华文化立场，加快构建中国话语和中国叙事体系，讲好中国故事、传播好中国声音，展现可信、可爱、可敬的中国形象。" },
-                { english: "We should strengthen our capabilities for international communications, strive to make our communications more effective, and establish China's voice in international affairs so that it is commensurate with our composite national strength and international status. We should deepen exchanges and mutual learning with other civilizations and better present Chinese culture to the world.", chinese: "加强国际传播能力建设，全面提升国际传播效能，形成同我国综合国力和国际地位相匹配的国际话语权。深化文明交流互鉴，推动中华文化更好走向世界。" }
+                {
+                    english_annotated: 'With the rapid development of our society and economy, China is playing an increasingly important role in the international arena.',
+                    chinese_full: '随着社会和经济的飞速发展，中国在国际舞台上发挥着越来越大的作用。'
+                },
+                {
+                    english_annotated: 'In this context, we should stay firmly rooted in Chinese culture, accelerate the establishment of China\'s discourse and narrative systems. We should better present China to the world, make China\'s voice better heard, and present China as a country worthy of friendship, trust, and respect.',
+                    chinese_full: '在此背景下，我们必须坚守中华文化立场，加快构建中国话语和中国叙事体系，讲好中国故事、传播好中国声音，展现可信、可爱、可敬的中国形象。'
+                },
+                {
+                    english_annotated: 'We should strengthen our capabilities for international communications, strive to make our communications more effective, and establish China\'s voice in international affairs so that it is commensurate with our composite national strength and international status. We should deepen exchanges and mutual learning with other civilizations and better present Chinese culture to the world.',
+                    chinese_full: '加强国际传播能力建设，全面提升国际传播效能，形成同我国综合国力和国际地位相匹配的国际话语权。深化文明交流互鉴，推动中华文化更好走向世界。'
+                }
             ]
         },
         {
             id: 4, title: '博鳌论坛 (U6)', unit: 'U6',
             sentences: [
-                { english: "Boao Forum for Asia (BFA) is an international organization headquartered in Boao Town, Hainan Province, China.", chinese: "博鳌亚洲论坛(Boao Forum for Asia, or BFA)是一个总部设在中国海南省博鳌镇的国际组织。" },
-                { english: "Jointly initiated by 29 member states, it was officially founded in 2001. BFA holds conferences in Boao on an annual basis, and has now become a high-level dialogue platform for political, business, and academic leaders from Asia and other continents to discuss key Asian and global issues.", chinese: "它由29个成员国共同发起，于2001年正式成立。论坛每年定期在博鳌举行会议，目前已成为亚洲以及其他洲政界、工商界和学术界领袖商讨亚洲及全球关键问题的高层次对话平台。" },
-                { english: "In the new historical period, BFA will continue to contribute actively to the peace, prosperity, and sustainable development of Asia and the world.", chinese: "在新的历史时期，博鳌亚洲论坛将继续为亚洲及世界和平、繁荣与可持续发展做出积极贡献。" }
+                {
+                    english_annotated: 'Boao Forum for Asia<span class="cn">（博鳌亚洲论坛）</span> (BFA) is an international organization headquartered in Boao Town, Hainan Province, China.',
+                    chinese_full: '博鳌亚洲论坛(Boao Forum for Asia, or BFA)是一个总部设在中国海南省博鳌镇的国际组织。'
+                },
+                {
+                    english_annotated: 'Jointly initiated by 29 member states, it was officially founded in 2001. BFA holds conferences in Boao on an annual basis, and has now become a high-level dialogue platform for political, business, and academic leaders from Asia and other continents to discuss key Asian and global issues.',
+                    chinese_full: '它由29个成员国共同发起，于2001年正式成立。论坛每年定期在博鳌举行会议，目前已成为亚洲以及其他洲政界、工商界和学术界领袖商讨亚洲及全球关键问题的高层次对话平台。'
+                },
+                {
+                    english_annotated: 'In the new historical period, BFA will continue to contribute actively to the peace, prosperity, and sustainable development of Asia and the world.',
+                    chinese_full: '在新的历史时期，博鳌亚洲论坛将继续为亚洲及世界和平、繁荣与可持续发展做出积极贡献。'
+                }
             ]
         }
     ];
 
     let currentLevelIndex = 0;
-    let cardStates = []; // {revealed: false, marked: false}
-    let examMode = false;
+    let cardStates = [];
 
     const levelGrid = document.getElementById('levelGrid');
     const screenIntro = document.getElementById('screen-intro');
     const screenCards = document.getElementById('screen-cards');
-    const screenExam = document.getElementById('screen-exam');
     const screenResult = document.getElementById('screen-result');
     const cardsContainer = document.getElementById('cards-container');
-    const examContainer = document.getElementById('exam-container');
     const progressFill = document.getElementById('progress-fill');
-    const examProgress = document.getElementById('exam-progress');
     const cardProgress = document.getElementById('card-progress');
-    const examText = document.getElementById('exam-text');
-    const btnExam = document.getElementById('btn-exam');
 
     function showScreen(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -388,7 +412,6 @@
     function startCards() {
         const level = LEVELS[currentLevelIndex];
         cardStates = level.sentences.map(() => ({ revealed: false, marked: false }));
-        examMode = false;
         showScreen(screenCards);
         renderCards();
         updateProgress();
@@ -402,8 +425,11 @@
             const div = document.createElement('div');
             div.className = 'card-item';
             div.innerHTML = `
-                <div class="card-english">${s.english}</div>
-                <div class="card-chinese ${state.revealed ? 'show' : ''}" id="chinese-${idx}">${s.chinese}</div>
+                <div class="card-english">${s.english_annotated}</div>
+                <div class="card-chinese ${state.revealed ? 'show' : ''}" id="chinese-${idx}">
+                    <div class="card-chinese-label">📖 整句中文意思</div>
+                    ${s.chinese_full}
+                </div>
                 <div class="card-actions">
                     <button class="btn-small btn-reveal" data-idx="${idx}">${state.revealed ? '🔒 隐藏翻译' : '👁 查看翻译'}</button>
                     <button class="btn-small btn-mark ${state.marked ? 'marked' : ''}" data-idx="${idx}">${state.marked ? '✅ 已记住' : '⭐ 记住了'}</button>
@@ -412,7 +438,6 @@
             cardsContainer.appendChild(div);
         });
 
-        // Bind events
         cardsContainer.querySelectorAll('.btn-reveal').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
@@ -433,10 +458,6 @@
                 updateProgress();
             });
         });
-
-        // Show exam button if all revealed
-        const allRevealed = cardStates.every(s => s.revealed);
-        btnExam.style.display = allRevealed ? 'inline-block' : 'none';
     }
 
     function updateProgress() {
@@ -445,43 +466,6 @@
         const marked = cardStates.filter(s => s.marked).length;
         progressFill.style.width = `${(revealed / total) * 100}%`;
         cardProgress.textContent = `${marked}/${total} 已记住`;
-    }
-
-    function startExam() {
-        examMode = true;
-        showScreen(screenExam);
-        const level = LEVELS[currentLevelIndex];
-        examContainer.innerHTML = '';
-        level.sentences.forEach((s, idx) => {
-            const div = document.createElement('div');
-            div.className = 'card-item';
-            div.innerHTML = `
-                <div class="card-english">${s.english}</div>
-                <div class="card-chinese" id="exam-chinese-${idx}" style="display:none;">${s.chinese}</div>
-                <div class="card-actions">
-                    <button class="btn-small btn-reveal" data-idx="${idx}">👁 查看翻译</button>
-                </div>
-            `;
-            examContainer.appendChild(div);
-        });
-
-        examContainer.querySelectorAll('.btn-reveal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                const chinese = document.getElementById(`exam-chinese-${idx}`);
-                chinese.style.display = 'block';
-                e.target.style.display = 'none';
-                updateExamProgress();
-            });
-        });
-        updateExamProgress();
-    }
-
-    function updateExamProgress() {
-        const total = LEVELS[currentLevelIndex].sentences.length;
-        const revealed = examContainer.querySelectorAll('.card-chinese[style*="block"]').length;
-        examProgress.style.width = `${(revealed / total) * 100}%`;
-        examText.textContent = `${revealed}/${total}`;
     }
 
     function showResult() {
@@ -498,14 +482,12 @@
             const state = cardStates[idx];
             const div = document.createElement('div');
             div.className = 'review-item ' + (state.marked ? 'ok' : 'review');
-            div.innerHTML = `<span class="status">${state.marked ? '✓' : '✗'}</span>${s.english.substring(0, 60)}...`;
+            div.innerHTML = `<span class="status">${state.marked ? '✓' : '✗'}</span>${s.english_annotated.substring(0, 60)}...`;
             list.appendChild(div);
         });
     }
 
     document.getElementById('btn-start').addEventListener('click', startCards);
-    btnExam.addEventListener('click', startExam);
-    document.getElementById('btn-back').addEventListener('click', () => showScreen(screenCards));
     document.getElementById('btn-restart').addEventListener('click', () => {
         showScreen(screenIntro);
         renderLevels();
