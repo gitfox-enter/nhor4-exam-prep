@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>阅读题 · 游戏化练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #1b3b4f 0%, #2a5f7a 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 8px;
+        }
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(4px);
+            padding: 1.2rem 1rem;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            font-weight: 500;
+            color: #e9f2f7;
+            text-shadow: 0 2px 6px #0a1e2b;
+            letter-spacing: 1px;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 small {
+            font-size: 0.85rem;
+            font-weight: 300;
+            opacity: 0.8;
+            background: #1f4a5e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 60px;
+            border: 1px solid #8fc3d9;
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .intro-text {
+            color: #bfdef0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .intro-text strong { color: #fcdb7a; }
+        
+        .btn {
+            background: #fad974;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+            transition: 0.06s linear;
+            cursor: pointer;
+            border: 1px solid #ffe399;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #b3952b; }
+        
+        /* 单元选择 */
+        .level-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .level-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #bfdef0;
+            cursor: pointer;
+            transition: 0.15s;
+            backdrop-filter: blur(2px);
+        }
+        .level-btn:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .level-btn.active {
+            background: #fad974;
+            border-color: #ffe399;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+        }
+        
+        /* 阅读文章 */
+        .passage-area {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .passage-title {
+            color: #fcdb7a;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .passage-content {
+            color: #e9f2f7;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        .passage-content p {
+            margin-bottom: 0.8rem;
+        }
+        
+        /* 题目区 */
+        .question-area {
+            background: rgba(0,0,0,0.15);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .question-num {
+            color: #fcdb7a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .question-text {
+            color: #e9f2f7;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        /* 选项 */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        @media (min-width: 480px) {
+            .options { grid-template-columns: 1fr 1fr; }
+        }
+        .option {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(2px);
+            padding: 12px 14px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.15);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+            text-align: left;
+            word-break: break-word;
+        }
+        .option:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+        .option:active { transform: scale(0.97); }
+        .option.correct { 
+            border-color: #4caf50; 
+            background: rgba(76,175,80,0.2); 
+            color: #a5d6a7; 
+        }
+        .option.wrong { 
+            border-color: #ef5350; 
+            background: rgba(239,83,80,0.2); 
+            color: #ef9a9a; 
+        }
+        .option.disabled { pointer-events: none; opacity: 0.5; }
+        
+        /* 解析 */
+        .analysis {
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .analysis.show { display: block; }
+        .analysis-title {
+            color: #fcdb7a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .analysis-content {
+            color: #d4eaf5;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        /* 进度和导航 */
+        .progress-bar {
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            height: 6px;
+            margin: 0.8rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #fad974;
+            height: 6px;
+            border-radius: 30px;
+            transition: width 0.25s ease;
+        }
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .progress-text {
+            color: #bfdef0;
+            font-size: 0.9rem;
+        }
+        .progress-text strong {
+            color: #fcdb7a;
+        }
+        
+        /* 结果界面 */
+        .result-area { text-align: center; }
+        .score-display { font-size: 3rem; font-weight: 600; color: #fcdb7a; margin: 0.5rem 0; }
+        .score-label { color: #bfdef0; font-size: 1rem; margin-bottom: 1rem; }
+        .review-list {
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .review-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #d4eaf5;
+            line-height: 1.5;
+        }
+        .review-item .status { font-weight: 600; display: inline-block; margin-right: 6px; }
+        .review-item.correct .status { color: #a5d6a7; }
+        .review-item.wrong .status { color: #ef9a9a; }
+        .review-item .answer { color: #fcdb7a; font-weight: 500; }
+        
+        @media (max-width: 480px) {
+            .game-container { padding: 0.8rem 0.6rem; border-radius: 28px; }
+            h1 { font-size: 1.1rem; }
+            .option { font-size: 0.8rem; padding: 10px 12px; }
+            .passage-content { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>📖 阅读题 <small>游戏化练习</small></h1>
+
+    <!-- 单元选择 -->
+    <div class="screen active" id="screen-select">
+        <div class="intro-text">
+            <p><strong>📖 使用说明</strong></p>
+            <p>• 选择单元，开始阅读理解练习</p>
+            <p>• 先阅读短文，然后回答3-5道选择题</p>
+            <p>• 回答后显示解析，帮助理解</p>
+        </div>
+        <div class="level-grid" id="level-grid">
+            <div class="level-btn" data-unit="U1">Unit 1</div>
+            <div class="level-btn" data-unit="U3">Unit 3</div>
+            <div class="level-btn" data-unit="U4">Unit 4</div>
+            <div class="level-btn" data-unit="U6">Unit 6</div>
+        </div>
+    </div>
+
+    <!-- 阅读界面 -->
+    <div class="screen" id="screen-reading">
+        <div class="passage-area">
+            <div class="passage-title" id="passage-title">Reading Passage 1</div>
+            <div class="passage-content" id="passage-content"></div>
+        </div>
+        
+        <div class="question-area" id="question-area" style="display:none;">
+            <div class="question-num" id="question-num">题目 1/3</div>
+            <div class="question-text" id="question-text"></div>
+            <div class="options" id="options"></div>
+            <div class="analysis" id="analysis">
+                <div class="analysis-title">📖 解析</div>
+                <div class="analysis-content" id="analysis-content"></div>
+            </div>
+        </div>
+        
+        <div class="nav-bar" id="nav-bar" style="display:none;">
+            <div class="progress-text">进度: <strong id="progress-text">0/3</strong></div>
+            <button class="btn" id="btn-next">下一题 →</button>
+            <button class="btn" id="btn-finish" style="display:none;">查看成绩</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <button class="btn" id="btn-start-quiz" style="display:none;">开始答题</button>
+            <button class="btn" id="btn-back" style="margin-left: 8px;">返回</button>
+        </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div class="screen" id="screen-result">
+        <div class="result-area">
+            <div class="score-label">你的得分</div>
+            <div class="score-display" id="final-score">0</div>
+            <div class="score-label" id="score-comment"></div>
+            <div class="review-list" id="review-list"></div>
+            <button class="btn" id="btn-restart">🔄 再来一次</button>
+            <button class="btn" id="btn-back-main" style="margin-left: 8px;">返回首页</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // 示例数据：U1 阅读题
+    const READING_DATA = {
+        'U1': {
+            title: 'Reading Passage 1 - Urbanization and Modernization',
+            passage: `<p>Urban-rural integration is a new stage in China's development toward modernization and urbanization. It aims to eliminate the urban-rural dual economic structure through integrated planning for urban and rural development, and through institutional reform and policy adjustment.</p>
+            <p>The process of urbanization has brought both opportunities and challenges. On one hand, it has promoted economic growth, improved infrastructure, and raised the standard of living. On the other hand, it has also led to problems such as environmental degradation, traffic congestion, and social inequality.</p>
+            <p>Only by greatly promoting urban-rural integration can the whole urban and rural economy of our country develop comprehensively and sustainably. This requires not only economic measures, but also social and environmental considerations.</p>`,
+            questions: [
+                {
+                    question: 'What is the main goal of urban-rural integration?',
+                    options: [
+                        'A. To promote urbanization only in urban areas',
+                        'B. To eliminate the urban-rural dual economic structure',
+                        'C. To focus on rural development only',
+                        'D. To increase the urban population'
+                    ],
+                    answer: 1,
+                    analysis: '根据文章第一段，城乡一体化的目的是"破除城乡二元经济结构（eliminate the urban-rural dual economic structure）"。'
+                },
+                {
+                    question: 'Which of the following is NOT mentioned as a challenge brought by urbanization?',
+                    options: [
+                        'A. Environmental degradation',
+                        'B. Traffic congestion',
+                        'C. Social inequality',
+                        'D. Food shortage'
+                    ],
+                    answer: 3,
+                    analysis: '文章第二段提到城市化带来的问题包括环境问题（environmental degradation）、交通拥堵（traffic congestion）和社会不平等（social inequality），但没有提到食物短缺（food shortage）。'
+                },
+                {
+                    question: 'What is required for sustainable development according to the passage?',
+                    options: [
+                        'A. Economic measures only',
+                        'B. Social measures only',
+                        'C. Environmental measures only',
+                        'D. Economic, social, and environmental considerations'
+                    ],
+                    answer: 3,
+                    analysis: '根据文章最后一句，可持续发展需要"not only economic measures, but also social and environmental considerations"（不仅是经济措施，还有社会和环境的考虑）。'
+                }
+            ]
+        }
+    };
+
+    let state = {
+        unit: null,
+        currentQuestion: 0,
+        score: 0,
+        answers: [],
+        quizStarted: false
+    };
+
+    const $ = id => document.getElementById(id);
+    const screenSelect = $('screen-select');
+    const screenReading = $('screen-reading');
+    const screenResult = $('screen-result');
+    const levelGrid = $('level-grid');
+    const passageTitle = $('passage-title');
+    const passageContent = $('passage-content');
+    const questionArea = $('question-area');
+    const questionNum = $('question-num');
+    const questionText = $('question-text');
+    const options = $('options');
+    const analysis = $('analysis');
+    const analysisContent = $('analysis-content');
+    const navBar = $('nav-bar');
+    const progressText = $('progress-text');
+    const btnStartQuiz = $('btn-start-quiz');
+    const btnNext = $('btn-next');
+    const btnFinish = $('btn-finish');
+    const btnBack = $('btn-back');
+    const btnRestart = $('btn-restart');
+    const btnBackMain = $('btn-back-main');
+    const finalScore = $('final-score');
+    const scoreComment = $('score-comment');
+    const reviewList = $('review-list');
+
+    // 单元选择
+    levelGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('level-btn')) {
+            const unit = e.target.dataset.unit;
+            if (READING_DATA[unit]) {
+                startReading(unit);
+            } else {
+                alert('该单元的阅读题数据正在完善中，请稍后再试！');
+            }
+        }
+    });
+
+    // 开始阅读
+    function startReading(unit) {
+        state.unit = unit;
+        state.currentQuestion = 0;
+        state.score = 0;
+        state.answers = [];
+        state.quizStarted = false;
+        
+        screenSelect.classList.remove('active');
+        screenReading.classList.add('active');
+        
+        const data = READING_DATA[unit];
+        passageTitle.textContent = data.title;
+        passageContent.innerHTML = data.passage;
+        
+        questionArea.style.display = 'none';
+        btnStartQuiz.style.display = 'inline-block';
+        navBar.style.display = 'none';
+    }
+
+    // 开始答题
+    btnStartQuiz.addEventListener('click', () => {
+        state.quizStarted = true;
+        questionArea.style.display = 'block';
+        btnStartQuiz.style.display = 'none';
+        navBar.style.display = 'flex';
+        showQuestion();
+    });
+
+    // 显示题目
+    function showQuestion() {
+        const data = READING_DATA[state.unit];
+        const q = data.questions[state.currentQuestion];
+        
+        questionNum.textContent = `题目 ${state.currentQuestion + 1}/${data.questions.length}`;
+        questionText.textContent = q.question;
+        
+        options.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.textContent = opt;
+            div.dataset.index = idx;
+            div.addEventListener('click', () => selectOption(div, idx, q));
+            options.appendChild(div);
+        });
+        
+        analysis.classList.remove('show');
+        
+        progressText.textContent = `${state.currentQuestion + 1}/${data.questions.length}`;
+        
+        // 更新按钮状态
+        if (state.currentQuestion === data.questions.length - 1) {
+            btnNext.style.display = 'none';
+            btnFinish.style.display = 'inline-block';
+        } else {
+            btnNext.style.display = 'none';
+            btnFinish.style.display = 'none';
+        }
+    }
+
+    // 选择选项
+    function selectOption(el, index, q) {
+        const correct = q.answer;
+        
+        // 禁用所有选项
+        options.querySelectorAll('.option').forEach(opt => {
+            opt.classList.add('disabled');
+            if (parseInt(opt.dataset.index) === correct) {
+                opt.classList.add('correct');
+            }
+            if (parseInt(opt.dataset.index) === index && index !== correct) {
+                opt.classList.add('wrong');
+            }
+        });
+        
+        // 显示解析
+        analysisContent.textContent = q.analysis;
+        analysis.classList.add('show');
+        
+        // 记录答案
+        const isCorrect = index === correct;
+        if (isCorrect) state.score += 10;
+        state.answers.push({
+            question: q.question,
+            selected: index,
+            correct: correct,
+            isCorrect: isCorrect
+        });
+        
+        // 显示下一题或完成按钮
+        if (state.currentQuestion < READING_DATA[state.unit].questions.length - 1) {
+            btnNext.style.display = 'inline-block';
+        } else {
+            btnFinish.style.display = 'inline-block';
+        }
+    }
+
+    // 下一题
+    btnNext.addEventListener('click', () => {
+        state.currentQuestion++;
+        showQuestion();
+    });
+
+    // 完成考试
+    btnFinish.addEventListener('click', () => {
+        showResult();
+    });
+
+    // 显示结果
+    function showResult() {
+        screenReading.classList.remove('active');
+        screenResult.classList.add('active');
+        
+        const totalScore = state.score;
+        finalScore.textContent = totalScore;
+        
+        const data = READING_DATA[state.unit];
+        const maxScore = data.questions.length * 10;
+        
+        if (totalScore >= maxScore * 0.9) {
+            scoreComment.textContent = '🎉 优秀！阅读理解能力很强！';
+        } else if (totalScore >= maxScore * 0.7) {
+            scoreComment.textContent = '👍 良好！继续加油！';
+        } else if (totalScore >= maxScore * 0.6) {
+            scoreComment.textContent = '📖 及格了，但还需要加强！';
+        } else {
+            scoreComment.textContent = '💪 加油！多练习几遍！';
+        }
+        
+        // 复习列表
+        reviewList.innerHTML = '';
+        state.answers.forEach((ans, idx) => {
+            const div = document.createElement('div');
+            div.className = `review-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+            div.innerHTML = `
+                <span class="status">${ans.isCorrect ? '✓' : '✗'}</span>
+                <span class="question">${ans.question}</span><br>
+                <span class="answer">你的答案：${String.fromCharCode(65 + ans.selected)} ${ans.isCorrect ? '' : `（正确答案：${String.fromCharCode(65 + ans.correct)}）`}</span>
+            `;
+            reviewList.appendChild(div);
+        });
+    }
+
+    // 重新开始
+    btnRestart.addEventListener('click', () => {
+        startReading(state.unit);
+    });
+
+    // 返回首页
+    btnBackMain.addEventListener('click', () => {
+        screenResult.classList.remove('active');
+        screenSelect.classList.add('active');
+    });
+
+    // 返回
+    btnBack.addEventListener('click', () => {
+        if (confirm('确定要返回吗？当前进度将丢失。')) {
+            screenReading.classList.remove('active');
+            screenSelect.classList.add('active');
+        }
+    });
+})();
+</script>
+</body>
+</html>
