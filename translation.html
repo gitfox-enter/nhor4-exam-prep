@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>翻译题 · 对照记忆卡片</title>
+    <title>翻译题 · 对照记忆卡片（真实数据版）</title>
+    <script src="data/translations.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -80,40 +81,6 @@
             color: #1d3f4a;
             box-shadow: 0 4px 0 #b3952b;
         }
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
-        }
-        .intro-text {
-            color: #bfdef0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.2rem;
-        }
-        .intro-text strong {
-            color: #fcdb7a;
-        }
-        .btn {
-            background: #fad974;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #1d3f4a;
-            box-shadow: 0 4px 0 #b3952b;
-            transition: 0.06s linear;
-            cursor: pointer;
-            border: 1px solid #ffe399;
-            letter-spacing: 0.3px;
-            display: inline-block;
-        }
-        .btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #b3952b;
-        }
         .card-item {
             background: rgba(255,255,255,0.08);
             border: 2px solid rgba(255,255,255,0.12);
@@ -122,19 +89,12 @@
             margin-bottom: 1rem;
             transition: all 0.2s;
         }
-        .card-item:hover {
-            border-color: rgba(255,255,255,0.2);
-        }
         .card-english {
             color: #e9f2f7;
             font-size: 0.9rem;
             line-height: 1.8;
             margin-bottom: 0.8rem;
             font-weight: 500;
-        }
-        .card-english .cn {
-            color: #8fc3d9;
-            font-weight: 400;
         }
         .card-chinese {
             color: #fcdb7a;
@@ -148,13 +108,6 @@
         }
         .card-chinese.show {
             display: block;
-        }
-        .card-chinese-label {
-            color: #bfdef0;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            letter-spacing: 1px;
         }
         .card-actions {
             display: flex;
@@ -206,51 +159,39 @@
             padding-top: 0.8rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .nav-bar .progress-text {
+        .progress-text {
             color: #bfdef0;
             font-size: 0.9rem;
         }
-        .nav-bar .progress-text strong {
+        .progress-text strong {
             color: #fcdb7a;
         }
-        .result-area {
-            text-align: center;
-        }
-        .score-display {
-            font-size: 2.5rem;
+        .btn {
+            background: #fad974;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
             font-weight: 600;
-            color: #fcdb7a;
-            margin: 0.5rem 0;
-        }
-        .score-label {
-            color: #bfdef0;
             font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-        .review-list {
-            text-align: left;
-            max-height: 350px;
-            overflow-y: auto;
-            margin: 1rem 0;
-        }
-        .review-item {
-            background: rgba(0,0,0,0.2);
-            border-radius: 16px;
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            color: #d4eaf5;
-            line-height: 1.5;
-        }
-        .review-item .status {
-            font-weight: 600;
+            color: #1d3f4a;
+            box-shadow: 0 4px 0 #b3952b;
+            transition: 0.06s linear;
+            cursor: pointer;
+            border: 1px solid #ffe399;
+            letter-spacing: 0.3px;
             display: inline-block;
-            margin-right: 6px;
         }
-        .review-item.ok .status {
-            color: #a5d6a7;
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #b3952b;
         }
-        .review-item.review .status {
+        .intro-text {
+            color: #bfdef0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+        }
+        .intro-text strong {
             color: #fcdb7a;
         }
         @media (max-width: 480px) {
@@ -269,7 +210,7 @@
 </head>
 <body>
 <div class="game-container">
-    <h1>📖 翻译题 <small>对照记忆卡片</small></h1>
+    <h1>📖 翻译题 <small>真实数据版 · 对照记忆</small></h1>
 
     <div class="level-grid" id="levelGrid"></div>
 
@@ -277,9 +218,11 @@
     <div class="screen active" id="screen-intro">
         <div class="intro-text">
             <p><strong>使用方法</strong></p>
-            <p>选择上方单元，先自己尝试翻译英文原文。</p>
-            <p>点击<strong>"查看翻译"</strong>对照标准答案。</p>
-            <p>会了就点<strong>"记住了"</strong>，不熟点<strong>"需复习"</strong>。</p>
+            <p>• 选择上方单元，开始翻译练习</p>
+            <p>• 先自己尝试翻译英文句子</p>
+            <p>• 点击<strong>"查看翻译"</strong>对照标准答案</p>
+            <p>• 会了就点<strong>"记住了"</strong>，不熟点<strong>"需复习"</strong></p>
+            <p style="margin-top:0.8rem; color:#fcdb7a;">✨ 数据来源：ima 知识库真实翻译题</p>
         </div>
         <button class="btn" id="btn-start">▶ 开始学习</button>
     </div>
@@ -295,11 +238,11 @@
 
     <!-- Result Screen -->
     <div class="screen" id="screen-result">
-        <div class="result-area">
-            <div class="score-label">复习统计</div>
-            <div class="score-display" id="result-stats">0/0</div>
-            <div class="score-label" id="result-comment"></div>
-            <div class="review-list" id="result-list"></div>
+        <div style="text-align:center;">
+            <div style="font-size:1rem; color:#bfdef0; margin-bottom:0.5rem;">复习统计</div>
+            <div style="font-size:2.5rem; font-weight:600; color:#fcdb7a; margin:0.5rem 0;" id="result-stats">0/0</div>
+            <div style="color:#bfdef0; font-size:1rem; margin-bottom:1rem;" id="result-comment"></div>
+            <div style="text-align:left; max-height:350px; overflow-y:auto; margin:1rem 0;" id="result-list"></div>
             <button class="btn" id="btn-restart">🔄 重新开始</button>
         </div>
     </div>
@@ -307,78 +250,14 @@
 
 <script>
 (function(){
-    const LEVELS = [
-        {
-            id: 1, title: '城乡一体化 (U1)', unit: 'U1',
-            sentences: [
-                {
-                    english_annotated: 'Urban-rural integration<span class="cn">（城乡一体化）</span> is a new stage<span class="cn">（新阶段）</span> in China\'s development<span class="cn">（发展）</span> toward modernization<span class="cn">（现代化）</span> and urbanization<span class="cn">（城市化）</span>.',
-                    chinese_full: '城乡一体化是我国现代化和城市化发展的一个新阶段。'
-                },
-                {
-                    english_annotated: 'It aims to eliminate the urban-rural dual economic structure through integrated planning for urban and rural development, and through institutional reform and policy adjustment, so that the urban and rural areas will achieve policy equality and complement each other in the mode of industrial development, enabling rural residents to enjoy the same civilization and welfare as urban residents.',
-                    chinese_full: '其目的是通过对城乡发展进行统筹规划，并通过体制改革和政策调整，破除城乡二元经济结构，从而实现城乡在政策上平等、在产业发展模式上互补，让农村居民享受到与城镇居民同样的文明和福利。'
-                },
-                {
-                    english_annotated: 'Only by greatly promoting urban-rural integration can the whole urban and rural economy of our country develop comprehensively and sustainably.',
-                    chinese_full: '只有大力推进城乡一体化，我国整个城乡经济才能实现全面、可持续发展。'
-                }
-            ]
-        },
-        {
-            id: 2, title: '生态保护 (U4)', unit: 'U4',
-            sentences: [
-                {
-                    english_annotated: 'Since the reform and opening up, the Chinese government has taken a series of measures to improve the ecological environment and protect biodiversity.',
-                    chinese_full: '改革开放以来，中国政府采取了一系列改善生态环境、保护生物多样性的措施。'
-                },
-                {
-                    english_annotated: 'Many key ecological projects have been advanced or implemented, and a large number of nature reserves, ecological demonstration zones and forest parks have been successively established.',
-                    chinese_full: '许多重点生态工程得到推进或实施，一大批自然保护区、生态示范区和森林公园先后被设立。'
-                },
-                {
-                    english_annotated: 'In the future, we should further enhance the diversity, stability, and sustainability of our ecosystems. We should uphold and act on the principle that lucid waters and lush mountains are invaluable assets, and remember to maintain the harmony between humanity and nature when planning our development.',
-                    chinese_full: '今后，我们还需要进一步提升生态系统的多样性、稳定性、持续性，牢固树立和践行绿水青山就是金山银山的理念，站在人与自然和谐共生的高度谋划发展。'
-                }
-            ]
-        },
-        {
-            id: 3, title: '国际传播 (U3)', unit: 'U3',
-            sentences: [
-                {
-                    english_annotated: 'With the rapid development of our society and economy, China is playing an increasingly important role in the international arena.',
-                    chinese_full: '随着社会和经济的飞速发展，中国在国际舞台上发挥着越来越大的作用。'
-                },
-                {
-                    english_annotated: 'In this context, we should stay firmly rooted in Chinese culture, accelerate the establishment of China\'s discourse and narrative systems. We should better present China to the world, make China\'s voice better heard, and present China as a country worthy of friendship, trust, and respect.',
-                    chinese_full: '在此背景下，我们必须坚守中华文化立场，加快构建中国话语和中国叙事体系，讲好中国故事、传播好中国声音，展现可信、可爱、可敬的中国形象。'
-                },
-                {
-                    english_annotated: 'We should strengthen our capabilities for international communications, strive to make our communications more effective, and establish China\'s voice in international affairs so that it is commensurate with our composite national strength and international status. We should deepen exchanges and mutual learning with other civilizations and better present Chinese culture to the world.',
-                    chinese_full: '加强国际传播能力建设，全面提升国际传播效能，形成同我国综合国力和国际地位相匹配的国际话语权。深化文明交流互鉴，推动中华文化更好走向世界。'
-                }
-            ]
-        },
-        {
-            id: 4, title: '博鳌论坛 (U6)', unit: 'U6',
-            sentences: [
-                {
-                    english_annotated: 'Boao Forum for Asia<span class="cn">（博鳌亚洲论坛）</span> (BFA) is an international organization headquartered in Boao Town, Hainan Province, China.',
-                    chinese_full: '博鳌亚洲论坛(Boao Forum for Asia, or BFA)是一个总部设在中国海南省博鳌镇的国际组织。'
-                },
-                {
-                    english_annotated: 'Jointly initiated by 29 member states, it was officially founded in 2001. BFA holds conferences in Boao on an annual basis, and has now become a high-level dialogue platform for political, business, and academic leaders from Asia and other continents to discuss key Asian and global issues.',
-                    chinese_full: '它由29个成员国共同发起，于2001年正式成立。论坛每年定期在博鳌举行会议，目前已成为亚洲以及其他洲政界、工商界和学术界领袖商讨亚洲及全球关键问题的高层次对话平台。'
-                },
-                {
-                    english_annotated: 'In the new historical period, BFA will continue to contribute actively to the peace, prosperity, and sustainable development of Asia and the world.',
-                    chinese_full: '在新的历史时期，博鳌亚洲论坛将继续为亚洲及世界和平、繁荣与可持续发展做出积极贡献。'
-                }
-            ]
-        }
-    ];
+    // 检查数据是否加载
+    if (typeof TRANSLATIONS_DATA === 'undefined') {
+        alert('数据未加载！请确保 data/translations.js 文件存在。');
+        return;
+    }
 
-    let currentLevelIndex = 0;
+    const UNITS = ['U1', 'U3', 'U4', 'U6'];
+    let currentUnitIndex = 0;
     let cardStates = [];
 
     const levelGrid = document.getElementById('levelGrid');
@@ -388,6 +267,8 @@
     const cardsContainer = document.getElementById('cards-container');
     const progressFill = document.getElementById('progress-fill');
     const cardProgress = document.getElementById('card-progress');
+    const btnStart = document.getElementById('btn-start');
+    const btnRestart = document.getElementById('btn-restart');
 
     function showScreen(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -396,39 +277,41 @@
 
     function renderLevels() {
         levelGrid.innerHTML = '';
-        LEVELS.forEach((level, idx) => {
+        UNITS.forEach((unit, idx) => {
             const btn = document.createElement('button');
-            btn.className = 'level-btn' + (idx === currentLevelIndex ? ' active' : '');
-            btn.textContent = level.title;
+            btn.className = 'level-btn' + (idx === currentUnitIndex ? ' active' : '');
+            btn.textContent = unit + ' (' + TRANSLATIONS_DATA[unit].length + '句)';
             btn.addEventListener('click', () => {
-                currentLevelIndex = idx;
+                currentUnitIndex = idx;
                 renderLevels();
-                startCards();
             });
             levelGrid.appendChild(btn);
         });
     }
 
     function startCards() {
-        const level = LEVELS[currentLevelIndex];
-        cardStates = level.sentences.map(() => ({ revealed: false, marked: false }));
+        const unit = UNITS[currentUnitIndex];
+        const translations = TRANSLATIONS_DATA[unit];
+        cardStates = translations.map(() => ({ revealed: false, marked: false }));
         showScreen(screenCards);
         renderCards();
         updateProgress();
     }
 
     function renderCards() {
-        const level = LEVELS[currentLevelIndex];
+        const unit = UNITS[currentUnitIndex];
+        const translations = TRANSLATIONS_DATA[unit];
         cardsContainer.innerHTML = '';
-        level.sentences.forEach((s, idx) => {
+        
+        translations.forEach((t, idx) => {
             const state = cardStates[idx];
             const div = document.createElement('div');
             div.className = 'card-item';
             div.innerHTML = `
-                <div class="card-english">${s.english_annotated}</div>
+                <div class="card-english">${t.english}</div>
                 <div class="card-chinese ${state.revealed ? 'show' : ''}" id="chinese-${idx}">
-                    <div class="card-chinese-label">📖 整句中文意思</div>
-                    ${s.chinese_full}
+                    <div style="font-size:0.75rem; font-weight:600; margin-bottom:0.3rem; color:#bfdef0; letter-spacing:1px;">📖 整句中文意思</div>
+                    ${t.chinese}
                 </div>
                 <div class="card-actions">
                     <button class="btn-small btn-reveal" data-idx="${idx}">${state.revealed ? '🔒 隐藏翻译' : '👁 查看翻译'}</button>
@@ -461,39 +344,73 @@
     }
 
     function updateProgress() {
-        const total = cardStates.length;
+        const unit = UNITS[currentUnitIndex];
+        const total = TRANSLATIONS_DATA[unit].length;
         const revealed = cardStates.filter(s => s.revealed).length;
         const marked = cardStates.filter(s => s.marked).length;
+        
+        cardProgress.textContent = `${revealed}/${total} 查看 | ${marked}/${total} 记住`;
         progressFill.style.width = `${(revealed / total) * 100}%`;
-        cardProgress.textContent = `${marked}/${total} 已记住`;
     }
 
     function showResult() {
-        showScreen(screenResult);
-        const total = cardStates.length;
+        const unit = UNITS[currentUnitIndex];
+        const total = TRANSLATIONS_DATA[unit].length;
         const marked = cardStates.filter(s => s.marked).length;
-        const needReview = total - marked;
+        
+        showScreen(screenResult);
         document.getElementById('result-stats').textContent = `${marked}/${total}`;
-        document.getElementById('result-comment').textContent = needReview === 0 ? '🎉 全部记住了！' : `还有 ${needReview} 句需要复习`;
-
-        const list = document.getElementById('result-list');
-        list.innerHTML = '';
-        LEVELS[currentLevelIndex].sentences.forEach((s, idx) => {
-            const state = cardStates[idx];
+        
+        let comment = '';
+        if (marked >= total * 0.9) {
+            comment = '🎉 优秀！翻译掌握得很好！';
+        } else if (marked >= total * 0.7) {
+            comment = '👍 良好！继续加油！';
+        } else if (marked >= total * 0.5) {
+            comment = '📖 及格了，但还需要加强！';
+        } else {
+            comment = '💪 加油！多复习几遍！';
+        }
+        document.getElementById('result-comment').textContent = comment;
+        
+        const resultList = document.getElementById('result-list');
+        resultList.innerHTML = '';
+        cardStates.forEach((state, idx) => {
+            const t = TRANSLATIONS_DATA[unit][idx];
             const div = document.createElement('div');
-            div.className = 'review-item ' + (state.marked ? 'ok' : 'review');
-            div.innerHTML = `<span class="status">${state.marked ? '✓' : '✗'}</span>${s.english_annotated.substring(0, 60)}...`;
-            list.appendChild(div);
+            div.style.cssText = 'background:rgba(0,0,0,0.2); border-radius:16px; padding:10px 14px; margin-bottom:8px; font-size:0.85rem; color:#d4eaf5; line-height:1.5;';
+            div.innerHTML = `
+                <span style="font-weight:600; margin-right:6px; color:${state.marked ? '#a5d6a7' : '#ef9a9a'};">${state.marked ? '✓' : '✗'}</span>
+                <span>${t.english.substring(0, 50)}...</span>
+            `;
+            resultList.appendChild(div);
         });
     }
 
-    document.getElementById('btn-start').addEventListener('click', startCards);
-    document.getElementById('btn-restart').addEventListener('click', () => {
-        showScreen(screenIntro);
-        renderLevels();
+    btnStart.addEventListener('click', () => {
+        startCards();
     });
 
+    btnRestart.addEventListener('click', () => {
+        renderLevels();
+        showScreen(screenIntro);
+    });
+
+    // 初始渲染
     renderLevels();
+    
+    // 添加"完成"按钮到卡片界面
+    const finishBtn = document.createElement('button');
+    finishBtn.className = 'btn';
+    finishBtn.textContent = '完成复习';
+    finishBtn.style.cssText = 'margin-left:12px; font-size:0.9rem; padding:8px 16px;';
+    document.querySelector('.nav-bar').appendChild(finishBtn);
+    
+    finishBtn.addEventListener('click', () => {
+        if (confirm('确定要结束复习吗？')) {
+            showResult();
+        }
+    });
 })();
 </script>
 </body>
